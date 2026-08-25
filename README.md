@@ -1,89 +1,117 @@
-# EmpTrackAI — Employee Activity Tracking System
+# Rahul Portfolio
 
-EmpTrackAI is a full-stack employee activity tracking system. It provides a React admin dashboard and a FastAPI backend for organizations to manage employees, review activity records, and maintain secure role-based access.
+A responsive personal portfolio for Rahul, a B.Tech Computer Science Engineering student specializing in AI & IoT. The site presents experience, skills, education, services, contact details, and a collection of software projects.
 
-## Features
+## Highlights
 
-- Multi-organization support
-- Super-admin registration and login
-- React admin dashboard
-- Employee management
-- Activity logging for screenshots, app usage, and keystrokes
-- JWT authentication and role-based access
-- PostgreSQL database with SQLAlchemy ORM
+- Modern, responsive single-page portfolio layout
+- Animated hero area, scroll-reveal effects, interactive project cards, and smooth hash navigation
+- Dedicated `/projects` page for the full project collection
+- Sections for about, experience, skills, featured projects, education, technology stack, services, and contact
+- Lightweight client-side form validation for the contact form
+- Social and GitHub links for project discovery
 
-## Technology Stack
+## Built With
 
-- Frontend: React, Vite, CSS
-- Backend: Python, FastAPI
-- Database: PostgreSQL
-- ORM: SQLAlchemy 2.0
-- Authentication: JWT and Passlib (bcrypt)
-- Validation: Pydantic v2
-- Configuration: pydantic-settings
+- [React](https://react.dev/) 19
+- [Vite](https://vite.dev/)
+- [React Router](https://reactrouter.com/)
+- [Tailwind CSS](https://tailwindcss.com/) 4
+- CSS for the portfolio visual system and animations
+
+## Pages and Routes
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Main portfolio page with all profile sections and featured projects |
+| `/projects` | Full listing of portfolio projects |
+
+The navigation links on the home page scroll to the matching section using URL hash anchors.
 
 ## Project Structure
 
 ```text
-EmpTrackAI/
-├── frontend/                 # React admin dashboard
-├── app/                      # FastAPI application
-│   ├── api/v1/routes/
-│   ├── core/
-│   ├── db/
-│   ├── models/
-│   ├── repositories/
-│   ├── schemas/
-│   └── services/
-├── requirements.txt
-└── README.md
+zeronext-portfolio/
+├── public/                  # Static assets served directly by Vite (if added)
+├── src/
+│   ├── assets/              # Profile and logo image assets
+│   ├── components/          # Shared UI components
+│   ├── data/
+│   │   └── portfolio.js     # Navigation and project content
+│   ├── pages/               # Home and all-projects routes
+│   ├── App.jsx              # Router and scroll-to-hash behavior
+│   ├── index.css            # Global styles and animations
+│   └── main.jsx             # Application entry point
+├── index.html
+├── package.json
+└── vite.config.js
 ```
 
-## Setup
+## Getting Started
 
-### Backend
+### Prerequisites
 
-```powershell
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
+- Node.js 20.19+ or 22.12+ (required by Vite 8)
+- npm
 
-Create a `.env` file in the project root:
+### Installation
 
-```env
-DATABASE_URL=postgresql+psycopg2://postgres:yourpassword@localhost:5432/emptrackai
-SECRET_KEY=your_very_long_random_secret_key_here
-ACCESS_TOKEN_EXPIRE_MINUTES=10080
-PROJECT_NAME=EmpTrackAI
-```
-
-### Frontend
-
-```powershell
-cd frontend
+```bash
+git clone https://github.com/codeofrealm/zeronext-portfolio.git
+cd zeronext-portfolio
 npm install
+```
+
+### Run Locally
+
+```bash
 npm run dev
 ```
 
-The frontend runs locally through Vite. The backend API runs at `http://127.0.0.1:8000`.
+Vite prints the local development URL, typically `http://localhost:5173`.
 
-## Current API Endpoints
+### Production Build
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| POST | `/api/v1/register` | Register an organization and admin |
-| POST | `/api/v1/login` | Admin login |
-| GET | `/health` | Health check |
+```bash
+npm run build
+npm run preview
+```
 
-## Planned Enhancements
+`npm run build` creates an optimized production bundle in `dist/`.
 
-- Employee and activity-log APIs
-- Real-time dashboard with WebSockets
-- Reports and exports
-- Docker and Docker Compose
-- Alembic migrations
+### Linting
 
-Made for EmpTrackAI.
-# rahul-profile
+```bash
+npm run lint
+```
+
+## Customizing the Portfolio
+
+Most portfolio content lives in two places:
+
+- `src/data/portfolio.js` — project cards, project links, technologies, and navigation items.
+- `src/pages/HomePage.jsx` — biography, experience, skills, education, services, contact details, and social links.
+
+To add a project, append an item to the `projects` array in `src/data/portfolio.js`. Include a unique `number`, title, category, description, image, technologies, and GitHub URL. The home page automatically displays the first three projects; the `/projects` route displays every entry.
+
+Replace images in `src/assets/` and update their imports wherever they are used to personalize the visual identity.
+
+## Contact Form Note
+
+The contact form currently validates inputs in the browser and displays a confirmation message. It does not send email or persist submissions. Connect it to a form provider or backend endpoint before using it for production enquiries.
+
+## Deployment
+
+This is a static Vite application. After `npm run build`, deploy the contents of `dist/` to any static hosting provider, such as GitHub Pages, Netlify, Vercel, or Cloudflare Pages. Configure your host to fall back to `index.html` for client-side routes such as `/projects`.
+
+## Author
+
+**Rahul** — B.Tech CSE (AI & IoT) student
+
+- GitHub: [codeofrealm](https://github.com/codeofrealm)
+- LinkedIn: [Rahul](https://www.linkedin.com/in/rahul-77a46b273)
+- Email: [rahul63794@gmail.com](mailto:rahul63794@gmail.com)
+
+## License
+
+This project is for portfolio purposes. Add a license file if you intend to distribute or reuse it under specific terms.
