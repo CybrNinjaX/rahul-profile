@@ -1,0 +1,2 @@
+public/small_cybertown.glb filter=lfs diff=lfs merge=lfs -text
+public/small_cybertown-web.glb filter=lfs diff=lfs merge=lfs -text
