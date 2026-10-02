@@ -2,10 +2,10 @@ import { useRef } from "react";
 import ScrollExpand from "../components/ScrollExpand";
 import SplashCursor from "../components/SplashCursor";
 import GlassIcon from "../components/GlassIcon";
+import AboutPage from "./AboutPage";
 
 function HomePage() {
   const revealTriggerRef = useRef(null);
-  const pageRef = useRef(null);
 
   return (
     <div className="app-root">
@@ -16,7 +16,7 @@ function HomePage() {
         DENSITY_DISSIPATION={2.5}
         SPLAT_RADIUS={0.35}
       />
-      <main ref={pageRef} className="home-page">
+      <main className="home-page">
         <header className="site-header">
           <a className="wordmark" href="#home" aria-label="Rahul, also known as CybrNinjaX, home">CybrNinjaX<span>.</span></a>
           <nav className="site-nav" aria-label="Main navigation">
@@ -45,15 +45,8 @@ function HomePage() {
       </main>
 
       <div className="scroll-runway" aria-hidden="true" />
-      <ScrollExpand triggerRef={revealTriggerRef} pageRef={pageRef}>
-        <section className="intro-section scroll-expand-about" id="about">
-          <p className="section-label">A little about me</p>
-          <p className="intro-copy">Good digital work should feel <em>simple to use</em> and <em>worth remembering.</em> That&apos;s the idea I bring to every project.</p>
-        </section>
-        <footer className="site-footer" id="contact">
-          <span>Have something good in mind?</span>
-          <a href="mailto:hello@cybrninjax.dev">Start a conversation <span aria-hidden="true">↗</span></a>
-        </footer>
+      <ScrollExpand triggerRef={revealTriggerRef}>
+        <AboutPage />
       </ScrollExpand>
     </div>
   );

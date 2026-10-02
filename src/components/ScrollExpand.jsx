@@ -6,7 +6,7 @@ const smoothstep = (start, end, value) => {
   return progress * progress * (3 - 2 * progress);
 };
 
-function ScrollExpand({ children, triggerRef, pageRef }) {
+function ScrollExpand({ children, triggerRef }) {
   const revealRef = useRef(null);
 
   useEffect(() => {
@@ -15,24 +15,19 @@ function ScrollExpand({ children, triggerRef, pageRef }) {
     if (!reveal || !trigger) return undefined;
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let origin = trigger.getBoundingClientRect();
     let currentProgress = 0;
     let targetProgress = 0;
     let frameId = 0;
+    const backgroundText = reveal.querySelector('.reveal-backdrop-text');
+    const revealItems = [...reveal.querySelectorAll('[data-scroll-reveal]')];
 
     const applyProgress = progress => {
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       const eased = smoothstep(0, 1, progress);
-      if (pageRef.current) {
-        const pageScale = 1 - eased * 0.035;
-        pageRef.current.style.transform = `scale(${pageScale}) rotate(${eased * -1.5}deg)`;
-        pageRef.current.style.borderRadius = `${eased * 14}px`;
-      }
-      trigger.style.setProperty('--stamp-scale', `${1 + eased * 0.12}`);
-      const headline = trigger.closest('.hero-line-third');
-      headline?.style.setProperty('--headline-scale', `${1 + eased * 0.12}`);
-      headline?.style.setProperty('--headline-rotation', `${eased * -180}deg`);
-      const origin = trigger.getBoundingClientRect();
+      trigger.style.setProperty('--stamp-scale', `${reduceMotion ? 1 : 1 + eased * 1.1}`);
+      trigger.style.setProperty('--stamp-rotation', `${reduceMotion ? 0 : eased * 180}deg`);
       reveal.style.top = `${origin.top * (1 - eased)}px`;
       reveal.style.left = `${origin.left * (1 - eased)}px`;
       reveal.style.width = `${origin.width + (viewportWidth - origin.width) * eased}px`;
@@ -44,6 +39,18 @@ function ScrollExpand({ children, triggerRef, pageRef }) {
       const contentProgress = smoothstep(0.72, 0.98, progress);
       reveal.style.setProperty('--reveal-content-opacity', `${contentProgress}`);
       reveal.style.setProperty('--reveal-content-offset', `${18 * (1 - contentProgress)}px`);
+      reveal.style.setProperty('--reveal-progress', `${eased}`);
+      if (backgroundText) {
+        backgroundText.style.opacity = `${smoothstep(0.25, 0.8, progress) * 0.28}`;
+        backgroundText.style.transform = `translate(-50%, -50%) translate3d(${-36 * (1 - eased)}px, ${20 * (1 - eased)}px, 0) rotate(${eased * 180}deg) scale(${0.92 + eased * 0.08})`;
+      }
+      revealItems.forEach((item, index) => {
+        const stagger = Math.min(0.075, 0.56 / Math.max(revealItems.length - 1, 1));
+        const start = 0.24 + index * stagger;
+        const itemProgress = reduceMotion ? 1 : smoothstep(start, Math.min(start + 0.16, 0.98), progress);
+        item.style.opacity = `${itemProgress}`;
+        item.style.transform = reduceMotion ? 'none' : `translate3d(0, ${20 * (1 - itemProgress)}px, 0)`;
+      });
     };
 
     const tick = () => {
@@ -67,16 +74,21 @@ function ScrollExpand({ children, triggerRef, pageRef }) {
       }
     };
 
+    const onResize = () => {
+      if (window.scrollY < 1) origin = trigger.getBoundingClientRect();
+      updateTarget();
+    };
+
     updateTarget();
     window.addEventListener('scroll', updateTarget, { passive: true });
-    window.addEventListener('resize', updateTarget);
+    window.addEventListener('resize', onResize);
 
     return () => {
       if (frameId) window.cancelAnimationFrame(frameId);
       window.removeEventListener('scroll', updateTarget);
-      window.removeEventListener('resize', updateTarget);
+      window.removeEventListener('resize', onResize);
     };
-  }, [triggerRef, pageRef]);
+  }, [triggerRef]);
 
   return (
     <section
@@ -85,6 +97,7 @@ function ScrollExpand({ children, triggerRef, pageRef }) {
       aria-label="About Rahul"
       aria-hidden="true"
     >
+      <span className="reveal-backdrop-text" aria-hidden="true">ABOUT / RAHUL</span>
       <div className="click-reveal-content">{children}</div>
     </section>
   );
