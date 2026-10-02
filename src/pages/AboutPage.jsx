@@ -25,8 +25,7 @@ const DETAILS_SPAN = 1.2;
 const TOTAL_SPAN = HOLD_END + DETAILS_SPAN; // 5.6
 const SETTLE_DELAY_MS = 400;
 
-function AboutPage() {
-  const scrollRef = useRef(null);
+function AboutPage({ scrollRef }) {
   const titleRef = useRef(null);
   const statementRef = useRef(null);
   const wordRef = useRef(null);
