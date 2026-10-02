@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const smoothstep = (start, end, value) => {
@@ -6,8 +6,12 @@ const smoothstep = (start, end, value) => {
   return progress * progress * (3 - 2 * progress);
 };
 
-function ScrollExpand({ children, triggerRef }) {
+function ScrollExpand({ children, triggerRef, scrollRef }) {
   const revealRef = useRef(null);
+  const setRevealRef = useCallback(element => {
+    revealRef.current = element;
+    if (scrollRef) scrollRef.current = element;
+  }, [scrollRef]);
 
   useEffect(() => {
     const reveal = revealRef.current;
@@ -23,7 +27,7 @@ function ScrollExpand({ children, triggerRef }) {
     const revealItems = [...reveal.querySelectorAll('[data-scroll-reveal]')];
 
     const applyProgress = progress => {
-      const viewportWidth = window.innerWidth;
+      const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
       const viewportHeight = window.innerHeight;
       const eased = smoothstep(0, 1, progress);
       trigger.style.setProperty('--stamp-scale', `${reduceMotion ? 1 : 1 + eased * 1.1}`);
@@ -88,11 +92,11 @@ function ScrollExpand({ children, triggerRef }) {
       window.removeEventListener('scroll', updateTarget);
       window.removeEventListener('resize', onResize);
     };
-  }, [triggerRef]);
+  }, [triggerRef, scrollRef]);
 
   return (
     <section
-      ref={revealRef}
+      ref={setRevealRef}
       className="click-reveal"
       aria-label="About Rahul"
       aria-hidden="true"
