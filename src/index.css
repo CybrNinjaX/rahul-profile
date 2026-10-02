@@ -62,6 +62,7 @@ body {
 a { color: inherit; text-decoration: none; }
 
 a:focus-visible { outline: 2px solid #eb6b4b; outline-offset: 5px; }
+button:focus-visible { outline: 2px solid #8ce0ca; outline-offset: 4px; }
 
 .home-page {
   --ink: #f1f3ef;
@@ -71,7 +72,7 @@ a:focus-visible { outline: 2px solid #eb6b4b; outline-offset: 5px; }
   height: 100vh;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 0 1.25%;
+  padding: 58px 1.25% 0;
   position: sticky;
   top: 0;
   z-index: 1;
@@ -94,20 +95,31 @@ a:focus-visible { outline: 2px solid #eb6b4b; outline-offset: 5px; }
 }
 
 .site-header {
+  position: fixed;
+  z-index: 30;
+  top: 0;
+  right: 0;
+  left: 0;
   height: 58px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 1.25%;
   border-bottom: 1px solid rgba(241, 243, 239, 0.24);
+  background: rgba(8, 10, 9, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .wordmark { display: inline-flex; align-items: baseline; font-size: 21px; font-weight: 850; letter-spacing: 0; animation: wordmark-arrive 900ms cubic-bezier(.2,.75,.25,1) both; }
 .wordmark span { color: var(--accent); }
 .wordmark:hover span { animation: logo-spark 700ms ease-in-out; }
 
-.site-nav { display: grid; grid-template-columns: repeat(2, minmax(100px, 1fr)); width: min(52%, 700px); gap: 18px; font-size: 10px; text-transform: uppercase; }
-.site-nav a { min-height: 57px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid rgba(241, 243, 239, 0.24); transition: color 160ms ease; }
-.site-nav a:hover { color: #fff; }
+.site-nav { display: grid; grid-template-columns: repeat(3, minmax(95px, 1fr)); width: min(62%, 760px); gap: 18px; font-size: 10px; text-transform: uppercase; }
+.site-nav a, .site-nav button { position: relative; min-height: 57px; display: flex; align-items: center; gap: 16px; padding: 0; border: 0; border-bottom: 1px solid rgba(241, 243, 239, 0.24); background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; transition: color 160ms ease; }
+.site-nav a::after, .site-nav button::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; content: ""; background: #8ce0ca; transform: scaleX(0); transform-origin: left; transition: transform 300ms cubic-bezier(.2,.75,.25,1); }
+.site-nav a:hover, .site-nav button:hover, .site-nav [aria-current="page"] { color: #fff; }
+.site-nav a[aria-current="page"]::after, .site-nav button[aria-current="page"]::after { transform: scaleX(1); }
 .nav-marker { width: 9px; height: 9px; flex: 0 0 9px; border: 1px solid rgba(241, 243, 239, 0.56); border-radius: 50%; }
 .site-nav .nav-contact { justify-content: flex-start; font-weight: 650; }
 .nav-contact > span:last-child, .text-link span { color: var(--accent); font-size: 18px; }
@@ -210,11 +222,11 @@ a:focus-visible { outline: 2px solid #eb6b4b; outline-offset: 5px; }
 }
 
 @media (max-width: 760px) {
-  .home-page { padding: 0 4%; }
-  .site-header { height: 68px; }
+  .home-page { padding: 68px 4% 0; }
+  .site-header { height: 68px; padding-inline: 4%; }
   .wordmark { font-size: 18px; }
-  .site-nav { width: 68%; grid-template-columns: repeat(2, minmax(80px, 1fr)); gap: 12px; font-size: 9px; }
-  .site-nav a { min-height: 67px; gap: 8px; }
+  .site-nav { width: 70%; grid-template-columns: repeat(3, minmax(58px, 1fr)); gap: 8px; font-size: 9px; }
+  .site-nav a, .site-nav button { min-height: 67px; gap: 7px; }
   .hero { height: 610px; min-height: 0; }
   .hero-note { top: 126px; width: 205px; font-size: 12px; }
   .hero-copy { bottom: 88px; }
@@ -237,8 +249,10 @@ a:focus-visible { outline: 2px solid #eb6b4b; outline-offset: 5px; }
 
 @media (max-width: 420px) {
   .site-header { gap: 10px; }
-  .site-nav { width: 64%; gap: 8px; }
-  .site-nav a { font-size: 8px; }
+  .site-nav { width: 60%; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  .site-nav a, .site-nav button { justify-content: center; gap: 4px; font-size: 8px; white-space: nowrap; }
+  .site-nav .nav-marker { display: none; }
+  .site-nav .nav-contact { font-size: 7px; }
   .hero { height: 540px; }
   .hero-note { top: 126px; width: 176px; font-size: 11px; }
   .hero-copy { bottom: 92px; }
