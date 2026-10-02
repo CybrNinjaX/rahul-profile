@@ -1,132 +1,91 @@
-'use client';
-
 import { useEffect, useRef } from 'react';
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
-const smoothstep = (edge0, edge1, value) => {
-  const t = clamp((value - edge0) / (edge1 - edge0), 0, 1);
-  return t * t * (3 - 2 * t);
+const smoothstep = (start, end, value) => {
+  const progress = clamp((value - start) / (end - start), 0, 1);
+  return progress * progress * (3 - 2 * progress);
 };
 
-function ScrollExpand({ children, className = '' }) {
-  const trackRef = useRef(null);
-  const stageRef = useRef(null);
+function ScrollExpand({ children, triggerRef, pageRef }) {
   const revealRef = useRef(null);
-  const logoRef = useRef(null);
-  const outlineRef = useRef(null);
-  const contentRef = useRef(null);
-  const hintRef = useRef(null);
 
   useEffect(() => {
-    const track = trackRef.current;
-    const stage = stageRef.current;
     const reveal = revealRef.current;
-    const logo = logoRef.current;
-    const outline = outlineRef.current;
-    if (!track || !stage || !reveal || !logo || !outline) return;
+    const trigger = triggerRef.current;
+    if (!reveal || !trigger) return undefined;
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let currentProgress = 0;
+    let targetProgress = 0;
     let frameId = 0;
-    let current = 0;
-    let target = 0;
-    let stageHeight = 0;
-    let running = false;
-    const originX = 0.75;
 
     const applyProgress = progress => {
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
       const eased = smoothstep(0, 1, progress);
-      const originPx = window.innerWidth * originX;
-      const originPy = window.innerHeight / 2;
-      const radius = 58 + Math.max(
-        Math.hypot(originPx, originPy),
-        Math.hypot(window.innerWidth - originPx, originPy),
-      ) * 1.08 * eased;
-      reveal.style.clipPath = `circle(${radius}px at ${originX * 100}% 50%)`;
-      logo.style.left = `${originX * 100}%`;
-      logo.style.transform = `translate(-50%, -50%) scale(${1 + eased * 17})`;
-      logo.style.opacity = `${1 - smoothstep(0.16, 0.48, progress)}`;
-      logo.style.visibility = progress >= 0.5 ? 'hidden' : 'visible';
-      outline.style.left = `${originX * 100}%`;
-      outline.style.transform = `translate(-50%, -50%) scale(${radius / 58})`;
-      outline.style.opacity = `${1 - smoothstep(0.82, 1, progress)}`;
-      const shade = Math.round(21 * (1 - eased));
-      reveal.style.backgroundColor = `rgb(${shade} ${shade} ${shade})`;
-      if (progress === 1) reveal.style.clipPath = `circle(${radius}px at ${originX * 100}% 50%)`;
-      if (contentRef.current) {
-        contentRef.current.style.opacity = `${smoothstep(0.5, 0.78, progress)}`;
-        contentRef.current.style.transform = `translate3d(0, ${24 * (1 - smoothstep(0.5, 0.78, progress))}px, 0)`;
+      if (pageRef.current) {
+        const pageScale = 1 - eased * 0.035;
+        pageRef.current.style.transform = `scale(${pageScale}) rotate(${eased * -1.5}deg)`;
+        pageRef.current.style.borderRadius = `${eased * 14}px`;
       }
-      if (hintRef.current) hintRef.current.style.opacity = `${1 - smoothstep(0, 0.1, progress)}`;
-    };
-
-    const measure = () => {
-      stageHeight = window.innerHeight;
-      stage.style.height = `${stageHeight}px`;
-      track.style.height = `${stageHeight * (reduceMotion ? 1 : 2.25)}px`;
-    };
-
-    const readProgress = () => {
-      if (reduceMotion) return 1;
-      const trackTop = track.getBoundingClientRect().top;
-      return clamp(-trackTop / (stageHeight * 1.25), 0, 1);
+      trigger.style.setProperty('--stamp-scale', `${1 + eased * 0.12}`);
+      const headline = trigger.closest('.hero-line-third');
+      headline?.style.setProperty('--headline-scale', `${1 + eased * 0.12}`);
+      headline?.style.setProperty('--headline-rotation', `${eased * -180}deg`);
+      const origin = trigger.getBoundingClientRect();
+      reveal.style.top = `${origin.top * (1 - eased)}px`;
+      reveal.style.left = `${origin.left * (1 - eased)}px`;
+      reveal.style.width = `${origin.width + (viewportWidth - origin.width) * eased}px`;
+      reveal.style.height = `${origin.height + (viewportHeight - origin.height) * eased}px`;
+      reveal.style.borderRadius = `${Math.min(origin.width, origin.height) * 0.3 * (1 - eased)}px`;
+      reveal.style.visibility = progress > 0.001 ? 'visible' : 'hidden';
+      reveal.style.overflow = progress > 0.99 ? 'auto' : 'hidden';
+      reveal.setAttribute('aria-hidden', progress < 0.99 ? 'true' : 'false');
+      const contentProgress = smoothstep(0.72, 0.98, progress);
+      reveal.style.setProperty('--reveal-content-opacity', `${contentProgress}`);
+      reveal.style.setProperty('--reveal-content-offset', `${18 * (1 - contentProgress)}px`);
     };
 
     const tick = () => {
-      current += (target - current) * 0.12;
-      if (Math.abs(target - current) < 0.0005) {
-        current = target;
-        running = false;
+      currentProgress += (targetProgress - currentProgress) * 0.16;
+      if (Math.abs(targetProgress - currentProgress) < 0.001) {
+        currentProgress = targetProgress;
+        frameId = 0;
+      } else {
+        frameId = window.requestAnimationFrame(tick);
       }
-      applyProgress(current);
-      frameId = running ? requestAnimationFrame(tick) : 0;
+      applyProgress(currentProgress);
     };
 
-    const onScroll = () => {
-      target = readProgress();
+    const updateTarget = () => {
+      targetProgress = clamp(window.scrollY / (window.innerHeight * 0.85), 0, 1);
       if (reduceMotion) {
-        current = target;
-        applyProgress(current);
-        return;
-      }
-      if (!running) {
-        running = true;
-        frameId = requestAnimationFrame(tick);
+        currentProgress = targetProgress;
+        applyProgress(currentProgress);
+      } else if (!frameId) {
+        frameId = window.requestAnimationFrame(tick);
       }
     };
 
-    const onResize = () => {
-      measure();
-      target = readProgress();
-      current = target;
-      applyProgress(current);
-    };
-
-    measure();
-    target = readProgress();
-    current = target;
-    applyProgress(current);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onResize);
+    updateTarget();
+    window.addEventListener('scroll', updateTarget, { passive: true });
+    window.addEventListener('resize', updateTarget);
 
     return () => {
-      if (frameId) cancelAnimationFrame(frameId);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
+      if (frameId) window.cancelAnimationFrame(frameId);
+      window.removeEventListener('scroll', updateTarget);
+      window.removeEventListener('resize', updateTarget);
     };
-  }, []);
+  }, [triggerRef, pageRef]);
 
   return (
-    <section ref={trackRef} className={`scroll-expand-track ${className}`.trim()} aria-label="About Rahul">
-      <div ref={stageRef} className="scroll-expand-stage">
-        <div ref={revealRef} className="scroll-expand-reveal">
-          <div ref={contentRef} className="scroll-expand-content">
-            {children}
-          </div>
-        </div>
-        <div ref={outlineRef} className="scroll-expand-outline" aria-hidden="true" />
-        <div ref={logoRef} className="scroll-expand-logo" aria-hidden="true">R</div>
-        <p ref={hintRef} className="scroll-expand-hint">Scroll to discover</p>
-      </div>
+    <section
+      ref={revealRef}
+      className="click-reveal"
+      aria-label="About Rahul"
+      aria-hidden="true"
+    >
+      <div className="click-reveal-content">{children}</div>
     </section>
   );
 }

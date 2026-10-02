@@ -20,10 +20,27 @@ function SplashCursor({
   COLOR = '#ffffff'
 }) {
   const canvasRef = useRef(null);
+  const fallbackRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    const enableClickFallback = () => {
+      const fallback = fallbackRef.current;
+      if (!fallback) return undefined;
+
+      const handlePointerDown = event => {
+        fallback.style.setProperty('--click-x', `${event.clientX}px`);
+        fallback.style.setProperty('--click-y', `${event.clientY}px`);
+        fallback.classList.remove('is-active');
+        void fallback.offsetWidth;
+        fallback.classList.add('is-active');
+      };
+
+      window.addEventListener('pointerdown', handlePointerDown, { passive: true });
+      return () => window.removeEventListener('pointerdown', handlePointerDown);
+    };
 
     function pointerPrototype() {
       this.id = -1;
@@ -61,8 +78,8 @@ function SplashCursor({
     let pointers = [new pointerPrototype()];
 
     const { gl, ext } = getWebGLContext(canvas);
-    if (!gl || !ext) return;
-    if (!ext.halfFloatTexType || !ext.formatRGBA || !ext.formatRG || !ext.formatR) return;
+    if (!gl || !ext) return enableClickFallback();
+    if (!ext.halfFloatTexType || !ext.formatRGBA || !ext.formatRG || !ext.formatR) return enableClickFallback();
 
     if (!ext.supportLinearFiltering) {
       config.DYE_RESOLUTION = 256;
@@ -1065,6 +1082,7 @@ function SplashCursor({
   return (
     <div className="splash-cursor-layer" aria-hidden="true">
       <canvas ref={canvasRef} className="splash-cursor-canvas"></canvas>
+      <span ref={fallbackRef} className="splash-cursor-fallback" />
     </div>
   );
 }
