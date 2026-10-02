@@ -84,6 +84,19 @@ button:focus-visible { outline: 2px solid #8ce0ca; outline-offset: 4px; }
 
 .app-root { position: relative; min-height: 100vh; }
 
+.app-content { min-height: 100vh; opacity: 0; visibility: hidden; }
+.app-content.is-ready { visibility: visible; animation: app-content-enter 700ms cubic-bezier(.2,.75,.25,1) both; }
+.loading-screen { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; overflow: hidden; overscroll-behavior: none; touch-action: none; background: #080a09; color: #f1f3ef; isolation: isolate; transition: opacity 480ms ease, visibility 0s linear 480ms; }
+.loading-screen.is-finished { opacity: 0; visibility: hidden; pointer-events: none; }
+.loading-spiral { position: absolute; top: 50%; left: 50%; width: min(100vw, 580px); height: min(78vh, 610px); min-height: 0; transform: translate(-50%, -50%); opacity: .62; }
+.loading-wordmark { position: absolute; top: 50%; left: 50%; margin: 0; color: #f1f3ef; font-size: 42px; font-weight: 850; line-height: 1; text-align: center; text-shadow: 0 2px 24px rgba(8, 10, 9, .75); transform: translate(-50%, -50%); white-space: nowrap; }
+.loading-wordmark span { color: #8ce0ca; }
+.loading-status { position: absolute; bottom: 42px; left: 4%; margin: 0; color: #a0a29f; font-size: 10px; font-weight: 600; text-transform: uppercase; }
+.loading-progress { position: absolute; right: 4%; bottom: 24px; left: 4%; height: 1px; overflow: hidden; background: rgba(241, 243, 239, .24); }
+.loading-progress span { display: block; width: 100%; height: 100%; background: #8ce0ca; transform: scaleX(0); transform-origin: left; animation: loading-progress-fill 2.1s cubic-bezier(.2,.75,.25,1) forwards; }
+@keyframes app-content-enter { from { opacity: 0; } to { opacity: 1; } }
+@keyframes loading-progress-fill { to { transform: scaleX(1); } }
+
 .splash-cursor-layer { position: fixed; inset: 0; z-index: 5; overflow: hidden; pointer-events: none; opacity: 0.9; mix-blend-mode: difference; }
 .splash-cursor-canvas { display: block; width: 100%; height: 100%; }
 .splash-cursor-fallback { position: fixed; top: var(--click-y, -100px); left: var(--click-x, -100px); width: 12px; aspect-ratio: 1; border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 50%; opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
@@ -222,6 +235,8 @@ button:focus-visible { outline: 2px solid #8ce0ca; outline-offset: 4px; }
 }
 
 @media (max-width: 760px) {
+  .loading-wordmark { font-size: 31px; }
+  .loading-status { bottom: 38px; font-size: 9px; }
   .home-page { padding: 68px 4% 0; }
   .site-header { height: 68px; padding-inline: 4%; }
   .wordmark { font-size: 18px; }
