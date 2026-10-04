@@ -1,15 +1,16 @@
 import SplashCursor from "../components/SplashCursor";
+import { useState } from "react";
 import {
-	ArrowDownRight,
 	ArrowRight,
 	ArrowUpRight,
 	BriefcaseBusiness,
-	Boxes,
 	Camera,
 	Code2,
 	Cpu,
 	Cuboid,
 	Play,
+	Moon,
+	Sun,
 	Workflow,
 } from "lucide-react";
 
@@ -57,8 +58,19 @@ const socialLinks = [
 ];
 
 function HomePage() {
+	const [theme, setTheme] = useState(() => {
+		if (typeof window === "undefined") return "dark";
+		return window.localStorage.getItem("profile-theme") === "light" ? "light" : "dark";
+	});
+
+	const toggleTheme = () => {
+		const nextTheme = theme === "dark" ? "light" : "dark";
+		setTheme(nextTheme);
+		window.localStorage.setItem("profile-theme", nextTheme);
+	};
+
 	return (
-		<div className="profile-site">
+		<div className="profile-site" data-theme={theme}>
 			<SplashCursor
 				SIM_RESOLUTION={96}
 				DYE_RESOLUTION={640}
@@ -82,6 +94,10 @@ function HomePage() {
 					<a href="#focus">Focus</a>
 					<a href="#toolkit">Toolkit</a>
 					<a href="#contact">Contact <ArrowUpRight size={13} aria-hidden="true" /></a>
+					<button className="profile-theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`} title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}>
+						{theme === "dark" ? <Sun size={15} aria-hidden="true" /> : <Moon size={15} aria-hidden="true" />}
+						<span>{theme === "dark" ? "Light" : "Dark"}</span>
+					</button>
 				</nav>
 			</header>
 
@@ -91,19 +107,7 @@ function HomePage() {
 						<p className="profile-eyebrow"><span /> Independent developer <i /> India</p>
 						<h1 id="profile-title">Build things<br />that <em>matter.</em></h1>
 						<p className="profile-lede">I’m Rahul, also known as <strong>cybrninjaX</strong>. I build across full-stack software, applied AI, automation, and generative 3D.</p>
-						<div className="profile-hero-actions">
-							<a className="profile-button profile-button-primary" href="#focus">Explore my work <ArrowDownRight size={16} aria-hidden="true" /></a>
-							<a className="profile-text-link" href="mailto:rahul63794@gmail.com">Say hello <ArrowUpRight size={15} aria-hidden="true" /></a>
-						</div>
 					</div>
-					<div className="profile-hero-art">
-						<div className="profile-art-frame">
-							<img src="https://user-images.githubusercontent.com/74038190/221352987-68da234d-4d62-4e9d-9d7f-098dc657c2dc.gif" alt="Animated illustration of a developer at work" />
-						</div>
-						<p className="profile-art-caption"><span>Curiosity in motion</span><span>01 — 05</span></p>
-						<div className="profile-art-mark" aria-hidden="true"><Boxes size={24} strokeWidth={1.4} /></div>
-					</div>
-					<a className="profile-scroll-cue" href="#about"><span>Scroll to explore</span><ArrowDownRight size={15} aria-hidden="true" /></a>
 				</section>
 
 				<div className="profile-ribbon" aria-label="Areas of work">
