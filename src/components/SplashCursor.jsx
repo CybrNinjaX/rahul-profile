@@ -23,6 +23,10 @@ function SplashCursor({
   const fallbackRef = useRef(null);
 
   useEffect(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+    if (reduceMotion || !hasFinePointer) return undefined;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -985,7 +989,7 @@ function SplashCursor({
     }
 
     function scaleByPixelRatio(input) {
-      const pixelRatio = window.devicePixelRatio || 1;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
       return Math.floor(input * pixelRatio);
     }
 
