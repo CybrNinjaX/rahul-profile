@@ -1,6 +1,6 @@
 import SplashCursor from "../SplashCursor";
 
-function SplashCursorEffect() {
+function SplashCursorEffect({ color }) {
 	return (
 		<SplashCursor
 			SIM_RESOLUTION={96}
@@ -15,7 +15,7 @@ function SplashCursorEffect() {
 			SHADING={false}
 			COLOR_UPDATE_SPEED={4}
 			RAINBOW_MODE={false}
-			COLOR="#80edc4"
+			COLOR={color}
 		/>
 	);
 }
