@@ -14,8 +14,7 @@ function HomePage() {
 		const stage = sphereStageRef.current;
 		if (!stage) return undefined;
 		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-			stage.style.setProperty("--sphere-contact-opacity", "1");
-			stage.style.setProperty("--sphere-orb-opacity", "1");
+			stage.style.setProperty("--sphere-orb-opacity", ".82");
 			if (contactRef.current) contactRef.current.inert = false;
 			return undefined;
 		}
@@ -26,14 +25,13 @@ function HomePage() {
 			const bounds = stage.getBoundingClientRect();
 			const scrollDistance = Math.max(1, bounds.height - window.innerHeight);
 			const progress = Math.min(1, Math.max(0, -bounds.top / scrollDistance));
-			stage.style.setProperty("--sphere-progress", progress.toFixed(4));
-			stage.style.setProperty("--sphere-scale", (0.72 + progress * 5).toFixed(3));
 			stage.style.setProperty("--sphere-orb-scale", (1 + progress * 2.2).toFixed(3));
-			stage.style.setProperty("--sphere-color-opacity", Math.min(1, Math.max(0, 1 - (progress - 0.64) * 3)).toFixed(3));
 			stage.style.setProperty("--sphere-content-opacity", Math.min(1, Math.max(0, 1 - (progress - 0.48) * 4)).toFixed(3));
-			stage.style.setProperty("--sphere-orb-opacity", Math.min(1, Math.max(0, 1 - (progress - 0.82) * 5.5)).toFixed(3));
-			stage.style.setProperty("--sphere-contact-opacity", Math.min(1, Math.max(0, (progress - 0.58) * 3.4)).toFixed(3));
-			if (contactRef.current) contactRef.current.inert = progress < 0.68;
+			stage.style.setProperty("--sphere-orb-opacity", (0.82 * Math.min(1, Math.max(0, 1 - (progress - 0.82) * 5.5))).toFixed(3));
+			const revealProgress = Math.min(1, Math.max(0, (progress - 0.42) / 0.44));
+			const revealRadius = Math.hypot(window.innerWidth, window.innerHeight) * revealProgress;
+			stage.style.setProperty("--sphere-reveal-radius", `${revealRadius.toFixed(1)}px`);
+			if (contactRef.current) contactRef.current.inert = progress < 0.62;
 		};
 		const requestUpdate = () => {
 			if (!frame) frame = window.requestAnimationFrame(updateProgress);

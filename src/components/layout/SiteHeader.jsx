@@ -1,14 +1,17 @@
 import { ArrowUpRight, Moon, Sun } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { navigationLinks } from "../../data/homePageData";
 
 function SiteHeader({ theme, onToggleTheme }) {
+	const location = useLocation();
+	const activeHash = location.pathname === "/" ? location.hash : "";
+
 	return (
 		<header className="profile-header">
 			<Link className="profile-wordmark" to="/" aria-label="cybrninjaX home">cybrninjaX<span>.</span></Link>
 			<nav className="profile-nav" aria-label="Main navigation">
 				{navigationLinks.map(({ label, href, external }) => (
-					<Link to={href} key={href}>
+					<Link to={href} key={href} aria-current={activeHash === href.slice(1) ? "location" : undefined}>
 						{label}{external && <ArrowUpRight size={13} aria-hidden="true" />}
 					</Link>
 				))}

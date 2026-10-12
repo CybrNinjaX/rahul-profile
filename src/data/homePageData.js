@@ -36,20 +36,20 @@ export const focusAreas = [
 ];
 
 export const toolGroups = [
-	{ number: "01", label: "Languages", tools: ["Java", "Python", "TypeScript", "JavaScript", "C", "C++", "Dart"] },
-	{ number: "02", label: "Frameworks", tools: ["React", "Next.js", "Spring Boot", "Flutter", "Django", "FastAPI", "Tailwind CSS"] },
-	{ number: "03", label: "AI & data", tools: ["PyTorch", "Transformers", "scikit-learn", "MongoDB", "MySQL", "PostgreSQL"] },
-	{ number: "04", label: "Build & ship", tools: ["AWS", "Firebase", "Supabase", "Docker", "Git", "Linux", "n8n", "Blender"] },
+	{ number: "01", label: "Languages", icon: Code2, tools: ["Java", "Python", "TypeScript", "JavaScript", "C", "C++", "Dart"] },
+	{ number: "02", label: "Frameworks", icon: Cuboid, tools: ["React", "Next.js", "Spring Boot", "Flutter", "Django", "FastAPI", "Tailwind CSS"] },
+	{ number: "03", label: "AI & data", icon: Cpu, tools: ["PyTorch", "Transformers", "scikit-learn", "MongoDB", "MySQL", "PostgreSQL"] },
+	{ number: "04", label: "Build & ship", icon: Workflow, tools: ["AWS", "Firebase", "Supabase", "Docker", "Git", "Linux", "n8n", "Blender"] },
 ];
 
 export const workflowSteps = ["Explore", "Prototype", "Build", "Test", "Ship"];
 
 export const navigationLinks = [
 	{ label: "About", href: "/#about" },
-	{ label: "Skills", href: "/skills" },
-	{ label: "Project", href: "/project" },
-	{ label: "Experience", href: "/experience" },
-	{ label: "Contact", href: "/contact", external: true },
+	{ label: "Skills", href: "/#toolkit" },
+	{ label: "Projects", href: "/#work" },
+	{ label: "Experience", href: "/#experience" },
+	{ label: "Contact", href: "/#contact" },
 ];
 
 export const socialLinks = [

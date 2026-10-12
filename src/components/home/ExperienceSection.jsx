@@ -11,10 +11,10 @@ function ExperienceSection() {
 			<figure className="profile-process-orb" aria-label="Interactive pink crystalline plasma orb">
 				<CrystalizedBall
 					preset="plasma"
-					color="#F25BD0"
+					color="#C578B8"
 					size={0.7}
-					crackle={0.85}
-					fill={0.5}
+					crackle={0.72}
+					fill={0.4}
 					interactive
 					hoverStrength={0.7}
 				/>
