@@ -196,6 +196,9 @@ export default function HomePage() {
             <span className="theme-label">{redMode ? 'RED ON' : 'BLACK'}</span>
             <span className="toggle-track" aria-hidden="true"><i /></span>
           </button>
+          <a className="cv-download" href="/rahul-resume.pdf" download>
+            Resume <span aria-hidden="true">↓</span>
+          </a>
         </div>
       </header>
 
@@ -205,7 +208,7 @@ export default function HomePage() {
           <div className="hero-shade" />
           <div className="hero-content">
             <p className="eyebrow"><span /> DIGITAL CREATOR / DEVELOPER</p>
-            <h1>Hello, I am<br />Raghul<span>.</span></h1>
+            <h1>Hello, I’m<br />Rahul<span>.</span></h1>
             <p className="hero-copy">I build thoughtful digital experiences with code, design, and a curiosity for immersive worlds.</p>
             <a className="hero-link" href="#project">Explore my work <span aria-hidden="true">↗</span></a>
             <p className="hero-hint">DRAG TO EXPLORE <span>·</span> SCROLL TO ZOOM</p>
@@ -216,7 +219,7 @@ export default function HomePage() {
         <section className="content-section" id="about">
           <p className="eyebrow">01 / ABOUT</p>
           <h2>Curious by nature.<br />Always building.</h2>
-          <p>I’m Raghul, a digital creator interested in the space where technology, visual design, and useful experiences meet.</p>
+          <p>I’m Rahul, a digital creator interested in the space where technology, visual design, and useful experiences meet.</p>
           <p>This portfolio is a home for experiments, projects, and ideas in progress.</p>
         </section>
 

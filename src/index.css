@@ -125,6 +125,26 @@ a { color: inherit; text-decoration: none; }
 
 .theme-toggle:hover { color: var(--accent-strong); }
 
+.cv-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 1rem;
+  padding: 0.62rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--accent-strong) 68%, transparent);
+  color: var(--accent-strong);
+  font-size: 0.62rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.cv-download:hover, .cv-download:focus-visible {
+  border-color: var(--accent-strong);
+  background: color-mix(in srgb, var(--accent-strong) 14%, transparent);
+}
+
 .toggle-track {
   position: relative;
   display: inline-flex;
@@ -428,7 +448,8 @@ a:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 5px; 
   .header-inner { width: min(100% - 2rem, 1200px); min-height: 88px; flex-wrap: wrap; justify-content: center; padding: 0.65rem 0; }
   .site-brand { width: auto; margin-right: auto; text-align: left; font-size: 0.73rem; order: 1; }
   .theme-toggle { margin-left: 0; order: 2; }
-  .site-nav { position: static; flex: 0 0 100%; flex-wrap: wrap; justify-content: center; gap: 0.15rem 1.1rem; width: 100%; margin-top: 0.35rem; font-size: 0.6rem; transform: none; order: 3; }
+  .cv-download { margin-left: 0.8rem; padding: 0.52rem 0.65rem; order: 3; }
+  .site-nav { position: static; flex: 0 0 100%; flex-wrap: wrap; justify-content: center; gap: 0.15rem 1.1rem; width: 100%; margin-top: 0.35rem; font-size: 0.6rem; transform: none; order: 4; }
   .site-nav a { padding: 0.35rem 0; }
   .home-hero { min-height: 100svh; padding: 9rem 1.25rem 4.5rem; }
   .hero-shade { background: linear-gradient(90deg, color-mix(in srgb, var(--page-surface) 86%, transparent), color-mix(in srgb, var(--page-surface) 43%, transparent)), linear-gradient(0deg, var(--page-surface) 0%, transparent 32%, color-mix(in srgb, var(--page-surface) 34%, transparent) 100%); }
