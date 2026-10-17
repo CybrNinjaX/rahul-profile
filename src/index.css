@@ -17,9 +17,9 @@
 
 * { box-sizing: border-box; }
 
-html { min-width: 320px; scroll-behavior: smooth; }
+html { min-width: 320px; scroll-behavior: smooth; scroll-snap-type: y mandatory; scroll-padding-top: 78px; overscroll-behavior-y: none; }
 
-body { min-width: 320px; min-height: 100vh; margin: 0; background: #050607; }
+body { min-width: 320px; min-height: 100vh; margin: 0; background: #050607; overscroll-behavior-y: none; }
 
 a { color: inherit; text-decoration: none; }
 
@@ -260,7 +260,7 @@ a { color: inherit; text-decoration: none; }
   overflow: hidden;
   padding: 8rem max(1.5rem, calc((100vw - 1200px) / 2)) 5rem;
   background: var(--page-surface);
-  scroll-margin-top: 78px;
+  scroll-margin-top: 0;
 }
 
 .city-scene {
@@ -370,7 +370,11 @@ a { color: inherit; text-decoration: none; }
   padding: clamp(5rem, 10vw, 8rem) 0;
   border-top: 1px solid color-mix(in srgb, var(--accent-strong) 20%, transparent);
   scroll-margin-top: 78px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
+
+.home-hero { scroll-snap-align: start; scroll-snap-stop: always; }
 
 .scroll-reveal {
   opacity: 0;
@@ -473,6 +477,10 @@ a { color: inherit; text-decoration: none; }
   transition: opacity 650ms ease, transform 650ms cubic-bezier(0.2, 0.7, 0.2, 1), filter 650ms ease, border-color 220ms ease, background 220ms ease;
 }
 
+.work-card { width: calc(50% - 1rem); align-self: flex-start; }
+.work-card:nth-child(even) { align-self: flex-end; border-left: 1px solid rgb(255 255 255 / 9%); border-right: 2px solid rgb(255 64 84 / 55%); background: linear-gradient(255deg, rgb(255 64 84 / 7%), rgb(255 255 255 / 1%) 52%, transparent); }
+.work-card:nth-child(even):hover { background: linear-gradient(255deg, rgb(255 64 84 / 12%), rgb(255 255 255 / 2%) 52%, transparent); }
+
 .work-card.is-visible {
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
@@ -509,6 +517,29 @@ a { color: inherit; text-decoration: none; }
 }
 
 .project-meta i { width: 3rem; height: 1px; background: currentColor; }
+
+.experience-list { display: grid; gap: 1rem; margin-top: 3rem; }
+.experience-card {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-left: 2px solid rgb(255 64 84 / 58%);
+  background: linear-gradient(110deg, rgb(255 64 84 / 6%), rgb(255 255 255 / 1%) 65%, transparent);
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  transition: opacity 600ms ease, transform 650ms cubic-bezier(0.2, 0.7, 0.2, 1), border-color 220ms ease, background 220ms ease;
+}
+.experience-card.is-visible { opacity: 1; transform: translate3d(0, 0, 0); transition-delay: calc(var(--experience-order) * 110ms); }
+.experience-card:hover { border-color: rgb(255 64 84 / 34%); background: linear-gradient(110deg, rgb(255 64 84 / 10%), rgb(255 255 255 / 2%) 65%, transparent); }
+.experience-card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; }
+.experience-company { margin: 0 0 0.55rem; color: #ff7180; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; }
+.experience-card h3 { margin: 0; color: #f2eef0; font-size: clamp(1.1rem, 2.6vw, 1.5rem); letter-spacing: -0.035em; }
+.experience-type { flex: 0 0 auto; padding: 0.38rem 0.65rem; border: 1px solid rgb(255 64 84 / 30%); border-radius: 999px; color: #ff8994; font-size: 0.65rem; }
+.experience-period { display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; margin: 1rem 0 0; color: #c2bbc0; font-size: 0.82rem; }
+.experience-period span, .experience-location { color: #8f8990; }
+.experience-location { margin: 0.4rem 0 0; font-size: 0.78rem; }
+.experience-skills { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 1.1rem; color: #ff7180; font-size: 0.7rem; }
+.experience-skills strong { margin-right: 0.2rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.experience-skill { padding: 0.35rem 0.6rem; border: 1px solid rgb(255 64 84 / 20%); border-radius: 999px; color: #c9c2c6; background: rgb(255 64 84 / 4%); }
 
 .skill-groups {
   display: flex;
@@ -601,9 +632,41 @@ a { color: inherit; text-decoration: none; }
   box-shadow: 0 0 18px rgb(255 64 84 / 24%);
 }
 
-.contact-section h2 { margin-bottom: 2rem; }
-.site-footer { display: flex; justify-content: space-between; width: min(100% - 3rem, 1000px); margin: 0 auto; padding: 1.5rem 0 2rem; border-top: 1px solid rgb(255 255 255 / 9%); color: #77747b; font-size: 0.58rem; letter-spacing: 0.16em; }
-
+.contact-section {
+  position: relative;
+  isolation: isolate;
+  width: min(100% - 3rem, 1000px);
+  min-height: calc(100svh - 78px);
+  margin: 0 auto;
+  padding: clamp(3rem, 7vh, 5rem) 0;
+  overflow: visible;
+  border-top: 0;
+  scroll-snap-align: end;
+  scroll-snap-stop: always;
+}
+.contact-panel {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  width: 100%;
+  min-height: clamp(28rem, calc(100svh - 15rem), 50rem);
+  overflow: visible;
+  border: 1px solid rgb(255 64 84 / 35%);
+  border-radius: clamp(1.1rem, 2vw, 1.8rem);
+  background: linear-gradient(135deg, rgb(255 255 255 / 3%), rgb(255 64 84 / 6%) 48%, rgb(8 7 9 / 28%));
+  box-shadow: 0 26px 90px rgb(0 0 0 / 38%), inset 0 0 48px rgb(255 64 84 / 5%);
+}
+.work-flow { position: relative; isolation: isolate; --laser-start: 0px; }
+.work-flow > .content-section { position: relative; z-index: 1; }
+.work-contact-laser { position: absolute !important; z-index: 0; top: var(--laser-start); right: 0; bottom: 0; left: 0; width: auto !important; height: auto !important; pointer-events: none; }
+.work-flow-start { display: block; height: 0; margin: 0; }
+.contact-content { position: relative; z-index: 1; display: flex; width: 100%; flex-direction: column; align-items: flex-start; justify-content: center; margin: 0 auto; padding: clamp(2rem, 6vw, 4.5rem); }
+.contact-content h2 { max-width: 900px; margin-bottom: 2rem; text-align: left; font-size: clamp(3rem, 8vw, 7rem); }
+.contact-socials { display: flex; gap: 0.7rem; margin-top: 2rem; }
+.contact-socials a { display: grid; width: 2.6rem; height: 2.6rem; place-items: center; border: 1px solid rgb(255 64 84 / 45%); border-radius: 50%; color: #ff7b89; background: rgb(255 64 84 / 7%); transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease; }
+.contact-socials a:hover { transform: translateY(-3px); background: rgb(255 64 84 / 18%); box-shadow: 0 0 20px rgb(255 64 84 / 30%); }
+.contact-socials svg { width: 1.05rem; height: 1.05rem; }
+.contact-socials svg.brand-icon path { fill: currentColor; }
 a:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 5px; }
 
 @media (max-width: 760px) {
@@ -618,14 +681,18 @@ a:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 5px; 
   .hero-content h1 { font-size: clamp(3.5rem, 16vw, 6rem); }
   .hero-hint { margin-top: 3.3rem; font-size: 0.53rem; }
   .hero-coordinate { right: 1.25rem; bottom: 1.25rem; }
-  .content-section { width: min(100% - 2.5rem, 1000px); scroll-margin-top: 100px; }
+  html { scroll-padding-top: 100px; }
+  .content-section { width: min(100% - 2.5rem, 1000px); }
+  .contact-section { width: min(100% - 2rem, 1000px); min-height: calc(100svh - 100px); padding: 2.5rem 0; }
+  .contact-panel { min-height: clamp(27rem, calc(100svh - 13rem), 46rem); }
+  .contact-content { padding: 1.5rem; }
   .work-grid { gap: 0.7rem; }
   .skill-group { flex-direction: column; gap: 0.8rem; }
   .skill-group h3 { flex-basis: auto; }
+  .experience-card-heading { flex-direction: column; gap: 0.9rem; }
   .skill-flow { gap: 0.7rem 1rem; }
-  .work-card { grid-template-columns: 2rem minmax(0, 1fr) 2rem; gap: 0.8rem; min-height: 130px; padding: 1.15rem 0.8rem; }
+  .work-card { width: 100%; grid-template-columns: 2rem minmax(0, 1fr) 2rem; gap: 0.8rem; min-height: 130px; padding: 1.15rem 0.8rem; }
   .project-section { padding-left: 0; }
-  .site-footer { width: min(100% - 2.5rem, 1000px); }
 }
 
 @media (max-width: 480px) {
@@ -636,6 +703,7 @@ a:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 5px; 
   html { scroll-behavior: auto; }
   .scroll-reveal { opacity: 1; transform: none; transition: none; }
   .work-card { opacity: 1; transform: none; filter: none; transition: none; }
+  .experience-card { opacity: 1; transform: none; transition: none; }
   .about-reveal > *, .skill-group h3, .skill-tool, .text-reveal { opacity: 1; transform: none; filter: none; transition: none; animation: none; }
   .about-reveal.is-visible .about-typing { clip-path: none; animation: none; }
   .about-typing::after { display: none; }
