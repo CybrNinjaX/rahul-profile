@@ -1,17 +1,121 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Bounds, Center, OrbitControls, useGLTF } from '@react-three/drei'
+import { ClipboardCheck, Workflow } from 'lucide-react'
+import {
+  siAndroidstudio, siBambulab, siBlender, siC, siCplusplus, siDart, siDjango,
+  siDocker, siFastapi, siFirebase, siFlask, siFlutter, siGit, siGithub,
+  siHtml5, siHuggingface, siJavascript, siLinux, siMongodb, siMysql, siN8n,
+  siNextdotjs, siOpenjdk, siPostgresql, siPostman, siPython, siPytorch, siReact,
+  siSpringboot, siSupabase, siTailwindcss, siTypescript,
+  siVllm, siVscodium,
+} from 'simple-icons'
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import EchoText from '../components/EchoText'
+import GlowCursor from '../components/GlowCursor'
 
 const modelPath = '/small_cybertown-web.glb'
 
 const navigation = [
   { label: 'Home', href: '#home' },
   { label: 'About', href: '#about' },
-  { label: 'Work', href: '#work' },
-  { label: 'Project', href: '#project' },
   { label: 'Skill', href: '#skill' },
+  { label: 'Project', href: '#project' },
+  { label: 'Work', href: '#work' },
   { label: 'Contact', href: '#contact' },
 ]
+
+const skillGroups = [
+  { title: 'Programming', skills: ['Java', 'Python', 'C', 'C++', 'JavaScript', 'TypeScript', 'Dart', 'HTML'] },
+  { title: 'Frontend & Mobile', skills: ['React', 'Next.js', 'Tailwind CSS', 'Flutter', 'React Native'] },
+  { title: 'Backend', skills: ['Django', 'Flask', 'FastAPI', 'Spring Boot'] },
+  { title: 'AI & Machine Learning', skills: ['PyTorch', 'Hugging Face', 'LLMs', 'AI Applications'] },
+  { title: 'Databases', skills: ['MongoDB', 'MySQL', 'PostgreSQL'] },
+  { title: 'Cloud & Services', skills: ['AWS', 'Firebase', 'Supabase', 'Docker'] },
+  { title: 'Automation & Testing', skills: ['n8n', 'Manual Testing', 'Automation Testing'] },
+  { title: '3D Modeling & Printing', skills: ['Blender', 'Bambu Lab A1'] },
+  { title: 'Developer Tools', skills: ['Git', 'GitHub', 'VS Code', 'Android Studio', 'Postman', 'Linux'] },
+]
+
+const workProjects = [
+  {
+    category: 'E-Commerce',
+    title: 'Construction Materials E-Commerce Platform',
+    description: 'A digital ordering platform for construction materials, designed to eliminate manual ordering.',
+    href: 'https://github.com/CybrNinjaX/Trade_mate.git',
+  },
+  {
+    category: 'Fintech · Automation',
+    title: 'Automated Loan Processing System',
+    description: 'A loan processing system that automates credit checks.',
+    links: [
+      { label: 'GitHub', href: 'https://github.com/techthisai-ai/loan-web' },
+      { label: 'Live App', href: 'https://loan-web-mu.vercel.app/login' },
+    ],
+  },
+  {
+    category: 'Fintech · Savings',
+    title: 'DigiGold Trading Application',
+    description: 'A digital gold trading app built around fractional gold savings.',
+    href: 'https://github.com/CybrNinjaX/digigold-app',
+  },
+  {
+    category: 'Product Showcase',
+    title: 'Ashtabal Brooms Website',
+    description: 'A product showcase website for Ashtabal Brooms.',
+    href: 'https://brooms.astraval.com/',
+  },
+]
+
+function AwsLogo() {
+  return (
+    <svg className="aws-brand-icon" viewBox="0 0 38 28" aria-hidden="true" focusable="false">
+      <text x="2" y="19" fontFamily="Arial, sans-serif" fontSize="16" fontWeight="700">aws</text>
+      <path d="M5 23c8 4 18 4 27-1m0 0-4-1m4 1-2 3" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
+    </svg>
+  )
+}
+
+const skillIcons = {
+  Java: siOpenjdk,
+  Python: siPython,
+  C: siC,
+  'C++': siCplusplus,
+  JavaScript: siJavascript,
+  TypeScript: siTypescript,
+  Dart: siDart,
+  HTML: siHtml5,
+  React: siReact,
+  'React Native': siReact,
+  'Next.js': siNextdotjs,
+  'Tailwind CSS': siTailwindcss,
+  Flutter: siFlutter,
+  Django: siDjango,
+  Flask: siFlask,
+  FastAPI: siFastapi,
+  'Spring Boot': siSpringboot,
+  PyTorch: siPytorch,
+  'Hugging Face': siHuggingface,
+  LLMs: siVllm,
+  'AI Applications': siHuggingface,
+  MongoDB: siMongodb,
+  MySQL: siMysql,
+  PostgreSQL: siPostgresql,
+  AWS: AwsLogo,
+  Firebase: siFirebase,
+  Supabase: siSupabase,
+  Docker: siDocker,
+  n8n: siN8n,
+  'Manual Testing': ClipboardCheck,
+  'Automation Testing': Workflow,
+  Blender: siBlender,
+  'Bambu Lab A1': siBambulab,
+  Git: siGit,
+  GitHub: siGithub,
+  'VS Code': siVscodium,
+  'Android Studio': siAndroidstudio,
+  Postman: siPostman,
+  Linux: siLinux,
+}
 
 function CityModel({ onReady }) {
   const { scene } = useGLTF(modelPath)
@@ -33,7 +137,7 @@ function ZoomLimitWatcher({ controlsRef, modelReady, onZoomLimit }) {
   const readyFrames = useRef(0)
   const startDistance = useRef(null)
   const previousDistance = useRef(null)
-  const transitionStarted = useRef(false)
+  const wasAtZoomLimit = useRef(false)
 
   useFrame(() => {
     const controls = controlsRef.current
@@ -56,15 +160,17 @@ function ZoomLimitWatcher({ controlsRef, modelReady, onZoomLimit }) {
     if (!modelReady || !controls) return undefined
 
     const handleControlsChange = () => {
-      if (startDistance.current === null || transitionStarted.current) return
+      if (startDistance.current === null) return
 
       const distance = camera.position.distanceTo(controls.target)
       const zoomLimit = Math.max(0.75, startDistance.current * 0.28)
       const zoomedIn = distance < previousDistance.current - 0.02
       previousDistance.current = distance
 
-      if (zoomedIn && distance <= zoomLimit * 1.015) {
-        transitionStarted.current = true
+      if (distance > zoomLimit * 1.05) wasAtZoomLimit.current = false
+
+      if (zoomedIn && !wasAtZoomLimit.current && distance <= zoomLimit * 1.015) {
+        wasAtZoomLimit.current = true
         onZoomLimit()
       }
     }
@@ -120,7 +226,7 @@ function CityScene({ redMode, onZoomLimit }) {
         enableDamping
         dampingFactor={0.08}
         rotateSpeed={0.72}
-        zoomSpeed={0.85}
+        zoomSpeed={-0.85}
         minDistance={0.5}
         maxDistance={1000}
         minPolarAngle={0.08}
@@ -135,6 +241,7 @@ export default function HomePage() {
   const [redMode, setRedMode] = useState(true)
   const [blast, setBlast] = useState(null)
   const [zoomTransition, setZoomTransition] = useState(false)
+  const [zoomTransitionId, setZoomTransitionId] = useState(0)
   const blastTimer = useRef(null)
   const transitionTimer = useRef(null)
 
@@ -143,10 +250,30 @@ export default function HomePage() {
     window.clearTimeout(transitionTimer.current)
   }, [])
 
-  const handleZoomLimit = useCallback(() => setZoomTransition(true), [])
+  useEffect(() => {
+    const sections = document.querySelectorAll('.scroll-reveal, .about-reveal, .skill-group, .text-reveal, .work-card')
+    if (!('IntersectionObserver' in window)) {
+      sections.forEach((section) => section.classList.add('is-visible'))
+      return undefined
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return
+        entry.target.classList.add('is-visible')
+        observer.unobserve(entry.target)
+      })
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' })
+
+    sections.forEach((section) => observer.observe(section))
+    return () => observer.disconnect()
+  }, [])
+
+  const handleZoomLimit = useCallback(() => setZoomTransitionId((id) => id + 1), [])
 
   useEffect(() => {
-    if (!zoomTransition) return undefined
+    if (zoomTransitionId === 0) return undefined
+    setZoomTransition(true)
     const scrollTimer = window.setTimeout(() => {
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       document.getElementById('about')?.scrollIntoView({
@@ -159,7 +286,7 @@ export default function HomePage() {
       window.clearTimeout(scrollTimer)
       window.clearTimeout(transitionTimer.current)
     }
-  }, [zoomTransition])
+  }, [zoomTransitionId])
 
   const triggerBlast = (event) => {
     const bounds = event.currentTarget.getBoundingClientRect()
@@ -173,6 +300,20 @@ export default function HomePage() {
 
   return (
     <div className={`portfolio-page${redMode ? ' red-mode' : ''}`}>
+      <GlowCursor
+        aria-hidden="true"
+        className="portfolio-glow-layer"
+        color="#ff4054"
+        secondaryColor="#ff9a8b"
+        intensity={1.05}
+        trailWidth={2.2}
+        linger={0.9}
+        glow={0.8}
+        hotspot={0.55}
+        followSpeed={0.68}
+        quality="medium"
+        maxDevicePixelRatio={1.5}
+      />
       <BlastEffect blast={blast} />
       <div className={`zoom-fade${zoomTransition ? ' visible' : ''}`} aria-hidden="true" />
       <header className="site-header">
@@ -208,7 +349,12 @@ export default function HomePage() {
           <div className="hero-shade" />
           <div className="hero-content">
             <p className="eyebrow"><span /> DIGITAL CREATOR / DEVELOPER</p>
-            <h1>Hello, I’m<br />Rahul<span>.</span></h1>
+            <h1 className="hero-heading" aria-label="Hello, I’m Rahul.">
+              <EchoText className="hero-echo" text="Hello, I’m" fontSize="inherit" fontWeight="inherit" tint="#ff4054" clickBurst={false} />
+              <br />
+              <EchoText className="hero-echo" text="Rahul" fontSize="inherit" fontWeight="inherit" tint="#ff4054" clickBurst={false} />
+              <span className="heading-accent">.</span>
+            </h1>
             <p className="hero-copy">I build thoughtful digital experiences with code, design, and a curiosity for immersive worlds.</p>
             <a className="hero-link" href="#project">Explore my work <span aria-hidden="true">↗</span></a>
             <p className="hero-hint">DRAG TO EXPLORE <span>·</span> SCROLL TO ZOOM</p>
@@ -216,50 +362,94 @@ export default function HomePage() {
           <span className="hero-coordinate" aria-hidden="true">CYBERTOWN / 001</span>
         </section>
 
-        <section className="content-section" id="about">
+        <section className="content-section about-reveal" id="about">
           <p className="eyebrow">01 / ABOUT</p>
-          <h2>Curious by nature.<br />Always building.</h2>
-          <p>I’m Rahul, a digital creator interested in the space where technology, visual design, and useful experiences meet.</p>
-          <p>This portfolio is a home for experiments, projects, and ideas in progress.</p>
+          <h2 className="about-typing"><span className="about-title-white">Ideas into</span>{' '}<span className="about-title-red">useful software.</span></h2>
+          <p>I’m <strong>cybrninjaX</strong>, a Full-Stack Developer and AI/ML enthusiast passionate about building web and mobile applications, AI-powered solutions, automation tools, and 3D models.</p>
+          <p>I enjoy turning ideas into practical projects, experimenting with new technologies, and creating software that solves real problems.</p>
         </section>
 
-        <section className="content-section" id="work">
-          <p className="eyebrow">02 / WORK</p>
-          <h2>Made with intent.</h2>
-          <div className="work-grid">
-            <article className="work-card">
-              <span>01</span><h3>Interactive experiences</h3>
-              <p>Interfaces that invite people to explore and engage.</p>
-            </article>
-            <article className="work-card">
-              <span>02</span><h3>Creative technology</h3>
-              <p>Experiments that bring visual ideas to life in the browser.</p>
-            </article>
-            <article className="work-card">
-              <span>03</span><h3>Immersive worlds</h3>
-              <p>Three-dimensional scenes shaped for the web.</p>
-            </article>
+        <section className="content-section" id="skill">
+          <p className="eyebrow">02 / SKILLS</p>
+          <h2 className="skills-title">Tools for building what’s next.</h2>
+          <div className="skill-groups">
+            {skillGroups.map(({ title, skills }, groupIndex) => (
+              <article className="skill-group" key={title} style={{ '--group-order': groupIndex }}>
+                <h3><span aria-hidden="true">/</span> {title}</h3>
+                <div className="skill-flow">
+                  {skills.map((name, skillIndex) => {
+                    const Icon = skillIcons[name]
+                    return (
+                      <span className="skill-tool" key={name} style={{ '--item-order': skillIndex }}>
+                        <span className="skill-icon" aria-hidden="true">
+                          {Icon.path
+                            ? <svg className="brand-icon" viewBox="0 0 24 24" focusable="false"><path d={Icon.path} /></svg>
+                            : <Icon size={18} strokeWidth={1.8} />}
+                        </span>
+                        <span>{name}</span>
+                      </span>
+                    )
+                  })}
+                </div>
+              </article>
+            ))}
           </div>
         </section>
 
-        <section className="content-section project-section" id="project">
+        <section className="content-section project-section scroll-reveal" id="project">
           <p className="eyebrow">03 / FEATURED PROJECT</p>
-          <h2>Cybertown</h2>
+          <h2 className="text-reveal">Cybertown</h2>
           <p>An explorable 3D city, rendered in the browser. Drag to orbit around the model and use the wheel or trackpad to zoom.</p>
           <span className="project-meta">REAL-TIME 3D <i /> WEB EXPERIENCE</span>
         </section>
 
-        <section className="content-section" id="skill">
-          <p className="eyebrow">04 / SKILLS</p>
-          <h2>Design meets technology.</h2>
-          <ul className="skill-list">
-            <li>Creative development</li><li>Interface design</li><li>3D for the web</li><li>Motion and interaction</li>
-          </ul>
+        <section className="content-section scroll-reveal" id="work">
+          <p className="eyebrow">04 / WORK</p>
+          <h2 className="text-reveal">Selected work.<br />Built to solve real needs.</h2>
+          <div className="work-grid">
+            {workProjects.map(({ category, title, description, href, links }, index) => {
+              const ProjectCard = href ? 'a' : 'article'
+              return (
+                <ProjectCard
+                  className="work-card"
+                  key={title}
+                  style={{ '--work-order': index }}
+                  href={href}
+                  target={href ? '_blank' : undefined}
+                  rel={href ? 'noopener noreferrer' : undefined}
+                  aria-label={href ? `${title} on GitHub (opens in a new tab)` : undefined}
+                >
+                  <span className="work-index">0{index + 1}</span>
+                  <div className="work-card-copy">
+                    <p className="work-category">{category}</p>
+                    <h3>{title}</h3>
+                    <p>{description}</p>
+                  {links && (
+                    <div className="work-project-links">
+                      {links.map(({ label, href: linkHref }) => (
+                        <a
+                          key={label}
+                          href={linkHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${title} ${label} (opens in a new tab)`}
+                        >
+                          {label} <span aria-hidden="true">↗</span>
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                  </div>
+                  <span className="work-arrow" aria-hidden="true">↗</span>
+                </ProjectCard>
+              )
+            })}
+          </div>
         </section>
 
-        <section className="content-section contact-section" id="contact">
+        <section className="content-section contact-section scroll-reveal" id="contact">
           <p className="eyebrow">05 / CONTACT</p>
-          <h2>Have an idea?<br />Let’s make it real.</h2>
+          <h2 className="text-reveal">Have an idea?<br />Let’s make it real.</h2>
           <a className="hero-link" href="mailto:hello@example.com">Get in touch <span aria-hidden="true">↗</span></a>
         </section>
       </main>

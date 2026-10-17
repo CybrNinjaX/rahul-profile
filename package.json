@@ -16,6 +16,7 @@
     "lucide-react": "^1.57.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "simple-icons": "^16.35.0",
     "tailwindcss": "^4.3.3",
     "three": "^0.186.1"
   },
