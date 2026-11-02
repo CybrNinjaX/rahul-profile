@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   siAndroidstudio, siBambulab, siBlender, siC, siCplusplus, siDart, siDjango,
   siDocker, siFastapi, siFirebase, siFlask, siFlutter, siGit, siGithub,
@@ -37,6 +37,8 @@ function SectionHeading({ number, label, title }) {
 }
 
 export default function HomePage() {
+  const [scrolled, setScrolled] = useState(false)
+
   useEffect(() => {
     const targets = document.querySelectorAll('.reveal-on-scroll')
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
@@ -54,9 +56,16 @@ export default function HomePage() {
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    const updateHeader = () => setScrolled(window.scrollY > 24)
+    updateHeader()
+    window.addEventListener('scroll', updateHeader, { passive: true })
+    return () => window.removeEventListener('scroll', updateHeader)
+  }, [])
+
   return (
     <div className="portfolio-page">
-      <header className="site-header">
+      <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
         <div className="header-inner">
           <a className="site-brand" href="#home" aria-label="Rahul, home">rahul<span>.</span></a>
           <nav className="site-nav" aria-label="Main navigation">
