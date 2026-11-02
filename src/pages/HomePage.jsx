@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import murugerImage from '../assets/muruger.jpeg'
+import murugerModel from '../assets/muruger.stl?url'
 import {
   siAndroidstudio, siBambulab, siBlender, siC, siCplusplus, siDart, siDjango,
   siDocker, siFastapi, siFirebase, siFlask, siFlutter, siGit, siGithub,
@@ -30,7 +32,29 @@ const projects = [
   { title: 'Automated Loan Processing System', category: 'Fintech · Automation', image: '/loan-cover.svg', description: 'A loan processing system that automates credit checks.', links: [{ label: 'GitHub', href: 'https://github.com/techthisai-ai/loan-web' }, { label: 'Live app', href: 'https://loan-web-mu.vercel.app/login' }] },
   { title: 'DigiGold Trading Application', category: 'Fintech · Savings', image: '/gold-cover.svg', description: 'A digital gold trading app built around fractional gold savings.', links: [{ label: 'GitHub', href: 'https://github.com/CybrNinjaX/digigold-app' }] },
   { title: 'Ashtabal Brooms Website', category: 'Product showcase', image: '/brooms-cover.svg', description: 'A product showcase website for Ashtabal Brooms.', links: [{ label: 'Visit website', href: 'https://brooms.astraval.com/' }] },
+  { title: 'Murugan 3D Model', category: '3D modeling · STL', image: murugerImage, imageAlt: 'Colorful 3D artwork of Lord Murugan with a peacock', description: 'A detailed 3D artwork of Lord Murugan with his vel and peacock.', links: [{ label: 'Purchase model', href: 'https://villpo.astraval.com/' }], download: { label: 'Download STL', href: murugerModel, fileName: 'muruger.stl' } },
 ]
+const visibleProjectCount = 4
+
+function ProjectCard({ project, index }) {
+  return (
+    <article className="project-card reveal-on-scroll" key={project.title}>
+      <div className={`project-cover${project.download ? ' project-cover-model' : ''}`}>
+        <img src={project.image} alt={project.imageAlt ?? `${project.category} project preview`} loading="lazy" />
+        <span className="project-number">{String(index + 1).padStart(2, '0')}</span>
+      </div>
+      <div className="project-card-copy">
+        <p className="item-overline">{project.category}</p>
+        <h3>{project.title}</h3>
+        <p className="project-description">{project.description}</p>
+        {project.download ? <div className="project-actions">
+          <a className="project-action project-action-primary" href={project.links[0].href} target="_blank" rel="noopener noreferrer">{project.links[0].label}<span aria-hidden="true">↗</span></a>
+          <a className="project-action" href={project.download.href} download={project.download.fileName}>{project.download.label}<span aria-hidden="true">↓</span></a>
+        </div> : <div className="project-links">{project.links.map((link) => <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer">{link.label}<span aria-hidden="true"> ↗</span></a>)}</div>}
+      </div>
+    </article>
+  )
+}
 
 function SectionHeading({ number, label, title }) {
   return <div className="section-heading"><p className="section-label">{number} <span>/</span> {label}</p><h2>{title}</h2></div>
@@ -53,7 +77,16 @@ export default function HomePage() {
       })
     }, { threshold: 0.12, rootMargin: '0px 0px -35px 0px' })
     targets.forEach((target) => observer.observe(target))
-    return () => observer.disconnect()
+    const directory = document.querySelector('.project-directory')
+    const observeAdditionalCards = () => {
+      if (!directory?.open) return
+      directory.querySelectorAll('.reveal-on-scroll:not(.is-visible)').forEach((target) => observer.observe(target))
+    }
+    directory?.addEventListener('toggle', observeAdditionalCards)
+    return () => {
+      observer.disconnect()
+      directory?.removeEventListener('toggle', observeAdditionalCards)
+    }
   }, [])
 
   useEffect(() => {
@@ -76,7 +109,7 @@ export default function HomePage() {
       </header>
 
       <main>
-        <section className="hero section-wrap" id="home">
+        <section className="hero section-wrap reveal-on-scroll" id="home">
           <div className="hero-copy">
             <p className="availability"><span /> Developer based in Tamil Nadu, India</p>
             <h1>Hi, I’m Rahul.<br /><span>I build useful</span><br />digital things.</h1>
@@ -101,24 +134,28 @@ export default function HomePage() {
 
         <section className="content-section section-wrap reveal-on-scroll" id="skills">
           <SectionHeading number="02" label="SKILLS" title="Tools I work with" />
-          <div className="skills-grid">{skills.map((group) => <article className="skill-card" key={group.title}><h3>{group.title}</h3><div className="skill-items">{group.items.map(([name, icon]) => <span className="skill-item" key={name} style={{ '--skill-color': icon ? `#${icon.hex}` : '#65736c' }}>{icon ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icon.path} /></svg> : <span className="skill-monogram" aria-hidden="true">{name === 'Manual testing' ? 'MT' : name === 'Automation testing' ? 'AT' : 'AWS'}</span>}<span>{name}</span></span>)}</div></article>)}</div>
+          <div className="skills-grid">{skills.map((group) => <article className="skill-card reveal-on-scroll" key={group.title}><h3>{group.title}</h3><div className="skill-items">{group.items.map(([name, icon]) => <span className="skill-item" key={name} style={{ '--skill-color': icon ? `#${icon.hex}` : '#65736c' }}>{icon ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icon.path} /></svg> : <span className="skill-monogram" aria-hidden="true">{name === 'Manual testing' ? 'MT' : name === 'Automation testing' ? 'AT' : 'AWS'}</span>}<span>{name}</span></span>)}</div></article>)}</div>
         </section>
 
         <section className="content-section section-wrap reveal-on-scroll" id="experience">
           <SectionHeading number="03" label="EXPERIENCE" title="Where I’ve worked" />
-          <div className="experience-list">{experience.map((job) => <article className="experience-item" key={`${job.company}-${job.title}`}><div><p className="item-overline">{job.company}</p><h3>{job.title}</h3><p className="item-meta">{job.period} <span>·</span> {job.location}</p></div><span className="job-type">{job.kind}</span></article>)}</div>
+          <div className="experience-list">{experience.map((job) => <article className="experience-item reveal-on-scroll" key={`${job.company}-${job.title}`}><div><p className="item-overline">{job.company}</p><h3>{job.title}</h3><p className="item-meta">{job.period} <span>·</span> {job.location}</p></div><span className="job-type">{job.kind}</span></article>)}</div>
         </section>
 
         <section className="content-section section-wrap reveal-on-scroll" id="projects">
           <SectionHeading number="04" label="SELECTED PROJECTS" title="A few things I’ve built" />
-          <div className="projects-grid">{projects.map((project, index) => <article className="project-card" key={project.title}><div className="project-cover"><img src={project.image} alt={`${project.category} project illustration`} loading="lazy" /><span className="project-number">0{index + 1}</span></div><div className="project-card-copy"><p className="item-overline">{project.category}</p><h3>{project.title}</h3><p className="project-description">{project.description}</p><div className="project-links">{project.links.map((link) => <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer">{link.label}<span aria-hidden="true"> ↗</span></a>)}</div></div></article>)}</div>
+          <div className="projects-grid">{projects.slice(0, visibleProjectCount).map((project, index) => <ProjectCard project={project} index={index} key={project.title} />)}</div>
+          {projects.length > visibleProjectCount && <details className="project-directory">
+            <summary><span className="project-directory-closed">View all projects</span><span className="project-directory-open">Show fewer projects</span><span aria-hidden="true">＋</span></summary>
+            <div className="projects-grid projects-grid-extra">{projects.slice(visibleProjectCount).map((project, index) => <ProjectCard project={project} index={index + visibleProjectCount} key={project.title} />)}</div>
+          </details>}
         </section>
 
         <section className="contact-section section-wrap reveal-on-scroll" id="contact">
           <div className="contact-panel"><div><p className="section-label">05 <span>/</span> CONTACT</p><h2>Have a project<br />in mind?</h2><p className="contact-intro">I’m always happy to talk about good ideas and interesting work.</p><a className="button button-light" href="mailto:rahul63794@gmail.com">Say hello <span aria-hidden="true">↗</span></a></div><div className="contact-details"><a href="mailto:rahul63794@gmail.com">rahul63794@gmail.com</a><div className="social-links"><a href="https://github.com/CybrNinjaX" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.linkedin.com/in/rahul-77a46b273" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="https://www.instagram.com/rahul_zeronex___" target="_blank" rel="noopener noreferrer">Instagram</a><a href="mailto:rahul63794@gmail.com">Email</a></div></div></div>
+          <footer className="site-footer"><a className="site-brand" href="#home">rahul<span>.</span></a><p>Designed and built by Rahul</p><a href="#home">Back to top ↑</a></footer>
         </section>
       </main>
-      <footer className="site-footer section-wrap"><a className="site-brand" href="#home">rahul<span>.</span></a><p>Designed and built by Rahul</p><a href="#home">Back to top ↑</a></footer>
     </div>
   )
 }
