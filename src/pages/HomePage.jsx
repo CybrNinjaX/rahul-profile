@@ -14,10 +14,10 @@ const experience = [
 ]
 
 const projects = [
-  { title: 'Construction Materials E-Commerce Platform', category: 'E-commerce', description: 'A digital ordering platform designed to make construction material orders easier.', links: [{ label: 'GitHub', href: 'https://github.com/CybrNinjaX/Trade_mate.git' }] },
-  { title: 'Automated Loan Processing System', category: 'Fintech · Automation', description: 'A loan processing system that automates credit checks.', links: [{ label: 'GitHub', href: 'https://github.com/techthisai-ai/loan-web' }, { label: 'Live app', href: 'https://loan-web-mu.vercel.app/login' }] },
-  { title: 'DigiGold Trading Application', category: 'Fintech · Savings', description: 'A digital gold trading app built around fractional gold savings.', links: [{ label: 'GitHub', href: 'https://github.com/CybrNinjaX/digigold-app' }] },
-  { title: 'Ashtabal Brooms Website', category: 'Product showcase', description: 'A product showcase website for Ashtabal Brooms.', links: [{ label: 'Visit website', href: 'https://brooms.astraval.com/' }] },
+  { title: 'Construction Materials E-Commerce Platform', category: 'E-commerce', image: '/trade-cover.svg', description: 'A digital ordering platform designed to make construction material orders easier.', links: [{ label: 'GitHub', href: 'https://github.com/CybrNinjaX/Trade_mate.git' }] },
+  { title: 'Automated Loan Processing System', category: 'Fintech · Automation', image: '/loan-cover.svg', description: 'A loan processing system that automates credit checks.', links: [{ label: 'GitHub', href: 'https://github.com/techthisai-ai/loan-web' }, { label: 'Live app', href: 'https://loan-web-mu.vercel.app/login' }] },
+  { title: 'DigiGold Trading Application', category: 'Fintech · Savings', image: '/gold-cover.svg', description: 'A digital gold trading app built around fractional gold savings.', links: [{ label: 'GitHub', href: 'https://github.com/CybrNinjaX/digigold-app' }] },
+  { title: 'Ashtabal Brooms Website', category: 'Product showcase', image: '/brooms-cover.svg', description: 'A product showcase website for Ashtabal Brooms.', links: [{ label: 'Visit website', href: 'https://brooms.astraval.com/' }] },
 ]
 
 function SectionHeading({ number, label, title }) {
@@ -39,6 +39,7 @@ export default function HomePage() {
 
       <main>
         <section className="hero section-wrap" id="home">
+          <img className="hero-art" src="/cybertown-cover.svg" alt="Abstract evening city illustration" />
           <div className="hero-copy">
             <p className="availability"><span /> Developer based in Tamil Nadu, India</p>
             <h1>Hi, I’m Rahul.<br /><span>I build useful</span><br />digital things.</h1>
@@ -69,7 +70,7 @@ export default function HomePage() {
 
         <section className="content-section section-wrap" id="projects">
           <SectionHeading number="04" label="SELECTED PROJECTS" title="A few things I’ve built" />
-          <div className="projects-grid">{projects.map((project, index) => <article className="project-card" key={project.title}><span className="project-number">0{index + 1}</span><p className="item-overline">{project.category}</p><h3>{project.title}</h3><p className="project-description">{project.description}</p><div className="project-links">{project.links.map((link) => <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer">{link.label}<span aria-hidden="true"> ↗</span></a>)}</div></article>)}</div>
+          <div className="projects-grid">{projects.map((project, index) => <article className="project-card" key={project.title}><div className="project-cover"><img src={project.image} alt={`${project.category} project illustration`} loading="lazy" /><span className="project-number">0{index + 1}</span></div><div className="project-card-copy"><p className="item-overline">{project.category}</p><h3>{project.title}</h3><p className="project-description">{project.description}</p><div className="project-links">{project.links.map((link) => <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer">{link.label}<span aria-hidden="true"> ↗</span></a>)}</div></div></article>)}</div>
         </section>
 
         <section className="contact-section section-wrap" id="contact">
