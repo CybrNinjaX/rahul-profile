@@ -5,26 +5,6 @@ import murugerImage from '../assets/muruger.jpeg'
 import murugerModel from '../assets/muruger.stl?url'
 import GlowCursor from '../components/GlowCursor.jsx'
 const AvatarScene = lazy(() => import('../components/AvatarScene.jsx'))
-import {
-  siAndroidstudio, siBambulab, siBlender, siC, siCplusplus, siDart, siDjango,
-  siDocker, siFastapi, siFirebase, siFlask, siFlutter, siGit, siGithub,
-  siHtml5, siHuggingface, siJavascript, siLinux, siMongodb, siMysql, siN8n,
-  siNextdotjs, siOpenjdk, siPostgresql, siPostman, siPython, siPytorch, siReact,
-  siSpringboot, siSupabase, siTailwindcss, siTypescript, siVllm, siVscodium,
-} from 'simple-icons'
-
-const skills = [
-  { title: 'Programming', items: [['Java', siOpenjdk], ['Python', siPython], ['C', siC], ['C++', siCplusplus], ['JavaScript', siJavascript], ['TypeScript', siTypescript], ['Dart', siDart], ['HTML', siHtml5]] },
-  { title: 'Frontend & Mobile', items: [['React', siReact], ['React Native', siReact], ['Next.js', siNextdotjs], ['Tailwind CSS', siTailwindcss], ['Flutter', siFlutter]] },
-  { title: 'Backend', items: [['Django', siDjango], ['Flask', siFlask], ['FastAPI', siFastapi], ['Spring Boot', siSpringboot]] },
-  { title: 'AI & Machine Learning', items: [['PyTorch', siPytorch], ['Hugging Face', siHuggingface], ['LLMs', siVllm], ['AI Applications', siHuggingface]] },
-  { title: 'Databases', items: [['MongoDB', siMongodb], ['MySQL', siMysql], ['PostgreSQL', siPostgresql]] },
-  { title: 'Cloud & Services', items: [['AWS', null], ['Firebase', siFirebase], ['Supabase', siSupabase], ['Docker', siDocker]] },
-  { title: 'Automation & Testing', items: [['n8n', siN8n], ['Manual Testing', null], ['Automation Testing', null]] },
-  { title: '3D Modeling & Printing', items: [['Blender', siBlender], ['Bambu Lab A1', siBambulab]] },
-  { title: 'Developer Tools', items: [['Git', siGit], ['GitHub', siGithub], ['VS Code', siVscodium], ['Android Studio', siAndroidstudio], ['Postman', siPostman], ['Linux', siLinux]] },
-]
-
 const experience = [
   { title: 'Software Engineer', company: 'Th isai Technologies Private Limited', kind: 'Full-time', period: 'Apr 2026 – Jun 2026', location: 'Tamil Nadu, India · On-site', detail: 'Built and maintained customer-facing software, collaborating across product requirements, implementation, and release.' },
   { title: 'API Testing', company: 'NADAL Business Services', kind: 'Internship', period: 'Jan 2026 – Mar 2026', location: 'Thisayanvilai · On-site', detail: 'Validated API behavior and reliability through structured manual testing and clear defect reporting.' },
@@ -118,6 +98,9 @@ export default function HomePage() {
   const heroRef = useRef(null)
   const sceneProgress = useRef(0)
   const aboutProgress = useRef(0)
+  const aboutIconPresence = useRef(0)
+  const skillsProgress = useRef(0)
+  const cursorPosition = useRef({ x: 0, y: 0 })
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -146,6 +129,35 @@ export default function HomePage() {
   }, [])
 
   useEffect(() => {
+    const cardStops = Array.from({ length: 9 }, (_, index) => ((0.16 + index * 0.08) / 0.92) * 0.82)
+    const timeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#skills .skills-lock-stage',
+        start: 'top top',
+        end: () => `+=${Math.round(window.innerHeight * 2.8)}`,
+        pin: true,
+        pinSpacing: true,
+        scrub: 0.5,
+        invalidateOnRefresh: true,
+        snap: {
+          snapTo: [0, ...cardStops, 0.82, 0.9, 0.94, 1],
+          duration: { min: 0.15, max: 0.45 },
+          delay: 0.12,
+          ease: 'power1.inOut',
+        },
+      },
+    })
+    timeline
+      .to(skillsProgress, { current: 0.92, duration: 0.82, ease: 'none' })
+      .to(skillsProgress, { current: 0.92, duration: 0.12, ease: 'none' })
+      .to(skillsProgress, { current: 1, duration: 0.06, ease: 'none' })
+    return () => {
+      timeline.scrollTrigger?.kill()
+      timeline.kill()
+    }
+  }, [])
+
+  useEffect(() => {
     const transition = gsap.to(aboutProgress, {
       current: 1,
       ease: 'none',
@@ -153,6 +165,31 @@ export default function HomePage() {
       scrollTrigger: { trigger: '#about', start: 'top 82%', end: 'top 30%', scrub: 1 },
     })
     return () => { transition.scrollTrigger?.kill(); transition.kill(); document.documentElement.style.removeProperty('--about-energy') }
+  }, [])
+
+  useEffect(() => {
+    const timeline = gsap.timeline({
+      scrollTrigger: { trigger: '#about', start: 'top bottom', end: 'bottom top', scrub: 0.4 },
+    })
+    timeline
+      .to(aboutIconPresence, { current: 1, duration: 0.16, ease: 'none' })
+      .to(aboutIconPresence, { current: 1, duration: 0.68, ease: 'none' })
+      .to(aboutIconPresence, { current: 0, duration: 0.16, ease: 'none' })
+    return () => { timeline.scrollTrigger?.kill(); timeline.kill() }
+  }, [])
+
+  useEffect(() => {
+    const handlePointerMove = (event) => {
+      cursorPosition.current.x = (event.clientX / window.innerWidth) * 2 - 1
+      cursorPosition.current.y = (event.clientY / window.innerHeight) * 2 - 1
+      const bounds = heroRef.current?.getBoundingClientRect()
+      if (bounds) {
+        heroRef.current.style.setProperty('--pointer-x', `${event.clientX - bounds.left}px`)
+        heroRef.current.style.setProperty('--pointer-y', `${event.clientY - bounds.top}px`)
+      }
+    }
+    window.addEventListener('pointermove', handlePointerMove, { passive: true })
+    return () => window.removeEventListener('pointermove', handlePointerMove)
   }, [])
 
   useEffect(() => {
@@ -230,13 +267,20 @@ export default function HomePage() {
           </div>
         </header>
 
-        <div className="global-avatar" aria-hidden="true">
-          <Suspense fallback={<div className="avatar-loading"><span>RAHUL / 3D EXPERIENCE</span></div>}><AvatarScene progress={sceneProgress} aboutProgress={aboutProgress} /></Suspense>
+        <div className={`global-avatar${activeSection === 'skills' ? ' is-skills' : ''}`} aria-hidden="true">
+          <Suspense fallback={<div className="avatar-loading"><span>RAHUL / 3D EXPERIENCE</span></div>}><AvatarScene progress={sceneProgress} aboutProgress={aboutProgress} iconsProgress={aboutIconPresence} skillsProgress={skillsProgress} cursor={cursorPosition} /></Suspense>
           <div className="global-avatar-fade" />
         </div>
 
         <main>
           <section className="hero" id="home" ref={heroRef}>
+            <div className="hero-code-layer" aria-hidden="true">
+              <span className="code-snippet code-snippet-one">const future = await build();</span>
+              <span className="code-snippet code-snippet-two">&lt;Canvas camera=&#123;scene&#125; /&gt;</span>
+              <span className="code-snippet code-snippet-three">from torch import nn</span>
+              <span className="code-snippet code-snippet-four">if (idea) ship(idea)</span>
+              <span className="code-coordinate">37° 00′ N &nbsp; / &nbsp; 8F3A</span>
+            </div>
             <div className="hero-inner">
               <div className="hero-copy reveal-on-scroll">
                 <p className="availability"><span className="dot" /> Available for freelance work</p>
@@ -251,9 +295,9 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="hero-value-grid reveal-on-scroll" aria-label="What I bring">
-                <article className="hero-value-card"><span>01 / ENGINEERING</span><h2>Full stack,<br />end to end.</h2><p>From product interface to production API.</p></article>
-                <article className="hero-value-card"><span>02 / INTELLIGENCE</span><h2>AI with<br />purpose.</h2><p>Useful machine learning and automation.</p></article>
-                <article className="hero-value-card"><span>03 / IMAGINATION</span><h2>Code meets<br />craft.</h2><p>3D, mobile, and thoughtful digital work.</p></article>
+                <article className="hero-value-card"><span>01 / ENGINEERING</span><h2>Full-stack</h2><p>From product interface to production API.</p></article>
+                <article className="hero-value-card"><span>02 / INTELLIGENCE</span><h2>Applied AI</h2><p>Useful machine learning and automation.</p></article>
+                <article className="hero-value-card"><span>03 / IMAGINATION</span><h2>Creative tech</h2><p>3D, mobile, and thoughtful digital work.</p></article>
               </div>
             </div>
             <a className="scroll-cue" href="#about" aria-label="Scroll to about">
@@ -281,25 +325,9 @@ export default function HomePage() {
           </section>
 
           <section className="content-section section-alt" id="skills">
-            <div className="section-wrap">
-              <SectionHeading number="02" label="SKILLS" title="Tools I work with" />
-              <div className="skills-grid">
-                {skills.map((group) => (
-                  <article className="skill-card reveal-on-scroll" key={group.title}>
-                    <h3>{group.title}</h3>
-                    <div className="skill-items">
-                      {group.items.map(([name, icon]) => (
-                        <span className="skill-item" key={name} style={{ '--skill-color': icon ? `#${icon.hex}` : '#6366f1' }}>
-                          {icon
-                            ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icon.path} /></svg>
-                            : <span className="skill-monogram" aria-hidden="true">{name === 'Manual Testing' ? 'MT' : name === 'Automation Testing' ? 'AT' : 'AWS'}</span>
-                          }
-                          <span>{name}</span>
-                        </span>
-                      ))}
-                    </div>
-                  </article>
-                ))}
+            <div className="skills-lock-stage">
+              <div className="section-wrap skills-lock-copy">
+                <SectionHeading number="02" label="SKILLS" title="Tools I work with" />
               </div>
             </div>
           </section>
