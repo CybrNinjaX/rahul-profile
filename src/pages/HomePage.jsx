@@ -136,7 +136,7 @@ export default function HomePage() {
   const handleNavClick = () => setMenuOpen(false)
 
   return (
-    <GlowCursor color="#6366f1" secondaryColor="#8b5cf6" intensity={1.0} trailWidth={2.5} linger={1.2} glow={0.9} theme="dark" style={{ minHeight: '100vh', background: '#080d1a' }}>
+    <GlowCursor color="#00d9ff" secondaryColor="#168cff" intensity={0.65} trailWidth={2} linger={0.8} glow={0.7} theme="dark" style={{ minHeight: '100vh', background: '#060b12' }}>
       <div className="portfolio-page">
 
         <header className="site-header">
@@ -163,43 +163,30 @@ export default function HomePage() {
         <main>
           <section className="hero" id="home">
             <div className="hero-laser" aria-hidden="true">
-              <LaserFlow color="#6366f1" intensity={1.5} beamWidth={1.2} flare={1.3} spread={1.4} spill={0.8} fog={0.12} dust={1.1} streaks={1.2} dots={0.8} pulse={1.2} speed={1.2} theme="dark" />
+              <LaserFlow color="#00d9ff" intensity={0.8} beamWidth={1.2} flare={0.8} spread={1.4} spill={0.5} fog={0.12} dust={0.8} streaks={0.8} dots={0.6} pulse={1} speed={0.8} theme="dark" />
             </div>
             <div className="hero-inner">
               <div className="hero-copy reveal-on-scroll">
                 <p className="availability"><span className="dot" /> Available for freelance work</p>
                 <h1>
-                  <span className="h1-hi">Hi, I'm Rahul.</span>
-                  <span className="h1-accent">I build useful</span>
-                  <span className="h1-plain">digital things.</span>
+                  <span className="h1-hi">Rahul<span className="hero-period">.</span></span>
                 </h1>
-                <p className="hero-summary">Full-stack developer and AI/ML enthusiast creating web apps, mobile apps, automation tools, and thoughtful digital experiences.</p>
+                <p className="hero-role">Full-Stack Developer</p>
+                <p className="hero-summary">AI / ML enthusiast<br />3D modeling &amp; printing nerd</p>
                 <div className="hero-actions">
                   <a className="btn btn-primary" href="#projects">View my work ↗</a>
-                  <a className="btn btn-ghost" href="#services">My services →</a>
-                </div>
-                <div className="hero-stats">
-                  <div className="stat"><strong>3+</strong><span>Years coding</span></div>
-                  <div className="stat-divider" />
-                  <div className="stat"><strong>5+</strong><span>Projects shipped</span></div>
-                  <div className="stat-divider" />
-                  <div className="stat"><strong>6+</strong><span>Tech stacks</span></div>
+                  <a className="btn btn-ghost" href="#contact">Let's talk →</a>
                 </div>
               </div>
-              <div className="hero-visual reveal-on-scroll" aria-hidden="true">
-                <div className="visual-orbit orbit-one" />
-                <div className="visual-orbit orbit-two" />
-                <div className="visual-card">
-                  <div className="visual-card-top"><span /><span /><span /><b>RAHUL / DIGITAL STUDIO</b></div>
-                  <div className="visual-card-body">
-                    <p>IDEA <i>→</i> CODE <i>→</i> IMPACT</p>
-                    <div className="visual-bars"><span /><span /><span /><span /><span /><span /><span /></div>
-                    <strong>BUILDING WHAT'S NEXT<span>_</span></strong>
-                    <small>FULL-STACK · AI · CREATIVE TECH</small>
-                  </div>
+              <div className="hero-visual reveal-on-scroll">
+                <div className="portrait-frame">
+                  <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1300&q=90" alt="Developer in a dark studio portrait" fetchPriority="high" />
+                  <div className="portrait-shade" />
+                  <div className="portrait-caption"><span className="dot" /> BUILDING DIGITAL EXPERIENCES <b>01 / 06</b></div>
                 </div>
-                <span className="visual-star star-one">✳</span>
-                <span className="visual-star star-two">✳</span>
+                <div className="hero-tech-rail" aria-label="Core technologies">
+                  <span>React</span><span>Python</span><span>AI / ML</span><span>Flutter</span><span>3D</span>
+                </div>
               </div>
             </div>
             <a className="scroll-cue" href="#about" aria-label="Scroll to about">
