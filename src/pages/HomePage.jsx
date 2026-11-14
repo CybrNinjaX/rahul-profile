@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import murugerImage from '../assets/muruger.jpeg'
 import murugerModel from '../assets/muruger.stl?url'
 import GlowCursor from '../components/GlowCursor.jsx'
-import { LaserFlow } from '../components/LaserFlow.jsx'
+const AvatarScene = lazy(() => import('../components/AvatarScene.jsx'))
 import {
   siAndroidstudio, siBambulab, siBlender, siC, siCplusplus, siDart, siDjango,
   siDocker, siFastapi, siFirebase, siFlask, siFlutter, siGit, siGithub,
@@ -24,16 +26,16 @@ const skills = [
 ]
 
 const experience = [
-  { title: 'Software Engineer', company: 'Th isai Technologies Private Limited', kind: 'Full-time', period: 'Apr 2026 – Jun 2026', location: 'Tamil Nadu, India · On-site' },
-  { title: 'API Testing', company: 'NADAL Business Services', kind: 'Internship', period: 'Jan 2026 – Mar 2026', location: 'Thisayanvilai · On-site' },
-  { title: 'Software Engineer', company: 'Astraval', kind: 'Internship', period: 'May 2025 – Jun 2025', location: 'Thisayanvilai, Tamil Nadu · On-site' },
+  { title: 'Software Engineer', company: 'Th isai Technologies Private Limited', kind: 'Full-time', period: 'Apr 2026 – Jun 2026', location: 'Tamil Nadu, India · On-site', detail: 'Built and maintained customer-facing software, collaborating across product requirements, implementation, and release.' },
+  { title: 'API Testing', company: 'NADAL Business Services', kind: 'Internship', period: 'Jan 2026 – Mar 2026', location: 'Thisayanvilai · On-site', detail: 'Validated API behavior and reliability through structured manual testing and clear defect reporting.' },
+  { title: 'Software Engineer', company: 'Astraval', kind: 'Internship', period: 'May 2025 – Jun 2025', location: 'Thisayanvilai, Tamil Nadu · On-site', detail: 'Contributed to full-stack product work and learned to ship practical features in a collaborative team.' },
 ]
 
 const projects = [
   { title: 'Construction Materials E-Commerce Platform', category: 'E-commerce', image: '/trade-cover.svg', description: 'A digital ordering platform designed to make construction material orders easier.', links: [{ label: 'GitHub', href: 'https://github.com/CybrNinjaX/Trade_mate.git' }] },
-  { title: 'Automated Loan Processing System', category: 'Fintech · Automation', image: '/loan-cover.svg', description: 'A loan processing system that automates credit checks.', links: [{ label: 'GitHub', href: 'https://github.com/techthisai-ai/loan-web' }, { label: 'Live app', href: 'https://loan-web-mu.vercel.app/login' }] },
+  { title: 'Automated Loan Processing System', category: 'Fintech · Automation', image: '/loan-cover.svg', description: 'A loan processing system that automates credit checks.', previewUrl: 'https://loan-web-mu.vercel.app/login', links: [{ label: 'GitHub', href: 'https://github.com/techthisai-ai/loan-web' }, { label: 'Live app', href: 'https://loan-web-mu.vercel.app/login' }] },
   { title: 'DigiGold Trading Application', category: 'Fintech · Savings', image: '/gold-cover.svg', description: 'A digital gold trading app built around fractional gold savings.', links: [{ label: 'GitHub', href: 'https://github.com/CybrNinjaX/digigold-app' }] },
-  { title: 'Ashtabal Brooms Website', category: 'Product Showcase', image: '/brooms-cover.svg', description: 'A product showcase website for Ashtabal Brooms.', links: [{ label: 'Visit website', href: 'https://brooms.astraval.com/' }] },
+  { title: 'Ashtabal Brooms Website', category: 'Product Showcase', image: '/brooms-cover.svg', description: 'A product showcase website for Ashtabal Brooms.', previewUrl: 'https://brooms.astraval.com/', links: [{ label: 'Visit website', href: 'https://brooms.astraval.com/' }] },
   { title: 'Murugan 3D Model', category: '3D Modeling · STL', image: murugerImage, imageAlt: 'Colorful 3D artwork of Lord Murugan with a peacock', description: 'A detailed 3D artwork of Lord Murugan with his vel and peacock.', links: [{ label: 'Purchase model', href: 'https://villpo.astraval.com/' }], download: { label: 'Download STL', href: murugerModel, fileName: 'muruger.stl' } },
 ]
 
@@ -48,13 +50,14 @@ const services = [
 
 const visibleProjectCount = 4
 
-function ProjectCard({ project, index }) {
+function ProjectCard({ project, index, onPreview }) {
   const coverClass = project.download ? 'project-cover project-cover-model' : 'project-cover'
   return (
     <article className="project-card reveal-on-scroll">
       <div className={coverClass}>
         <img src={project.image} alt={project.imageAlt ?? `${project.category} project preview`} loading="lazy" />
         <span className="project-number">{String(index + 1).padStart(2, '0')}</span>
+        <button className="project-preview-trigger" type="button" onClick={() => onPreview(project)}>Open preview <span>↗</span></button>
       </div>
       <div className="project-card-copy">
         <p className="item-overline">{project.category}</p>
@@ -72,6 +75,33 @@ function ProjectCard({ project, index }) {
   )
 }
 
+function ProjectPreviewDialog({ project, onClose }) {
+  const dialogRef = useRef(null)
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return undefined
+    dialog.showModal()
+    return () => { if (dialog.open) dialog.close() }
+  }, [])
+  return (
+    <dialog className="project-preview-dialog" ref={dialogRef} onClose={onClose}
+      onClick={(event) => { if (event.target === event.currentTarget) event.currentTarget.close() }}>
+      <div className="preview-dialog-top"><p className="item-overline">{project.category}</p><button type="button" className="preview-close" onClick={() => dialogRef.current?.close()} aria-label="Close project preview">×</button></div>
+      <h2>{project.title}</h2>
+      <p className="preview-dialog-description">{project.description}</p>
+      <div className="preview-dialog-media">
+        {project.previewUrl
+          ? <iframe src={project.previewUrl} title={`${project.title} live preview`} loading="lazy" />
+          : <img src={project.image} alt={project.imageAlt ?? `${project.title} preview`} />}
+      </div>
+      <div className="preview-dialog-actions">
+        {project.links.map((link) => <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer">{link.label} ↗</a>)}
+        {project.download && <a href={project.download.href} download={project.download.fileName}>{project.download.label} ↓</a>}
+      </div>
+    </dialog>
+  )
+}
+
 function SectionHeading({ number, label, title, light }) {
   return (
     <div className="section-heading">
@@ -84,6 +114,35 @@ function SectionHeading({ number, label, title, light }) {
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
+  const [selectedProject, setSelectedProject] = useState(null)
+  const heroRef = useRef(null)
+  const sceneProgress = useRef(0)
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
+    const hero = heroRef.current
+    if (!hero) return undefined
+    const timeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        endTrigger: document.querySelector('#projects'),
+        end: 'bottom bottom',
+        scrub: 1,
+        invalidateOnRefresh: true,
+      },
+    })
+    timeline
+      .to(sceneProgress, { current: 0.2, duration: 1, ease: 'none' })
+      .to(sceneProgress, { current: 0.4, duration: 1, ease: 'none' })
+      .to(sceneProgress, { current: 0.64, duration: 1.3, ease: 'none' })
+      .to(sceneProgress, { current: 0.64, duration: 0.4, ease: 'none' })
+      .to(sceneProgress, { current: 1, duration: 1.5, ease: 'none' })
+    return () => {
+      timeline.scrollTrigger?.kill()
+      timeline.kill()
+    }
+  }, [])
 
   useEffect(() => {
     const targets = document.querySelectorAll('.reveal-on-scroll')
@@ -160,11 +219,13 @@ export default function HomePage() {
           </div>
         </header>
 
+        <div className="global-avatar" aria-hidden="true">
+          <Suspense fallback={<div className="avatar-loading"><span>RAHUL / 3D EXPERIENCE</span></div>}><AvatarScene progress={sceneProgress} /></Suspense>
+          <div className="global-avatar-fade" />
+        </div>
+
         <main>
-          <section className="hero" id="home">
-            <div className="hero-laser" aria-hidden="true">
-              <LaserFlow color="#00d9ff" intensity={0.8} beamWidth={1.2} flare={0.8} spread={1.4} spill={0.5} fog={0.12} dust={0.8} streaks={0.8} dots={0.6} pulse={1} speed={0.8} theme="dark" />
-            </div>
+          <section className="hero" id="home" ref={heroRef}>
             <div className="hero-inner">
               <div className="hero-copy reveal-on-scroll">
                 <p className="availability"><span className="dot" /> Available for freelance work</p>
@@ -178,20 +239,10 @@ export default function HomePage() {
                   <a className="btn btn-ghost" href="#contact">Let's talk →</a>
                 </div>
               </div>
-              <div className="hero-visual reveal-on-scroll">
-                <div className="portrait-frame">
-                  <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=1300&q=90" alt="Developer in a dark studio portrait" fetchPriority="high" />
-                  <div className="portrait-shade" />
-                  <div className="portrait-caption"><span className="dot" /> BUILDING DIGITAL EXPERIENCES <b>01 / 06</b></div>
-                </div>
-                <div className="hero-tech-rail" aria-label="Core technologies">
-                  <span>React</span><span>Python</span><span>AI / ML</span><span>Flutter</span><span>3D</span>
-                </div>
-              </div>
             </div>
             <a className="scroll-cue" href="#about" aria-label="Scroll to about">
               <span className="scroll-line" aria-hidden="true" />
-              Scroll
+              Scroll to explore
             </a>
           </section>
 
@@ -242,14 +293,17 @@ export default function HomePage() {
               <SectionHeading number="03" label="EXPERIENCE" title="Where I've worked" />
               <div className="experience-list">
                 {experience.map((job) => (
-                  <article className="experience-item reveal-on-scroll" key={`${job.company}-${job.title}`}>
-                    <div className="exp-left">
-                      <p className="item-overline">{job.company}</p>
-                      <h3>{job.title}</h3>
-                      <p className="item-meta">{job.period} <span>·</span> {job.location}</p>
-                    </div>
-                    <span className="job-type">{job.kind}</span>
-                  </article>
+                  <details className="experience-entry reveal-on-scroll" key={`${job.company}-${job.title}`}>
+                    <summary className="experience-item">
+                      <span className="exp-left">
+                        <span className="item-overline">{job.company}</span>
+                        <span className="experience-title">{job.title}</span>
+                        <span className="item-meta">{job.period} <span>·</span> {job.location}</span>
+                      </span>
+                      <span className="exp-summary-right"><span className="job-type">{job.kind}</span><span className="experience-toggle">＋</span></span>
+                    </summary>
+                    <p className="experience-detail">{job.detail}</p>
+                  </details>
                 ))}
               </div>
             </div>
@@ -260,7 +314,7 @@ export default function HomePage() {
               <SectionHeading number="04" label="SELECTED PROJECTS" title="A few things I've built" />
               <div className="projects-grid">
                 {projects.slice(0, visibleProjectCount).map((project, index) => (
-                  <ProjectCard project={project} index={index} key={project.title} />
+                    <ProjectCard project={project} index={index} key={project.title} onPreview={setSelectedProject} />
                 ))}
               </div>
               {projects.length > visibleProjectCount && (
@@ -272,7 +326,7 @@ export default function HomePage() {
                   </summary>
                   <div className="projects-grid projects-grid-extra">
                     {projects.slice(visibleProjectCount).map((project, index) => (
-                      <ProjectCard project={project} index={index + visibleProjectCount} key={project.title} />
+                      <ProjectCard project={project} index={index + visibleProjectCount} key={project.title} onPreview={setSelectedProject} />
                     ))}
                   </div>
                 </details>
@@ -329,6 +383,7 @@ export default function HomePage() {
               </div>
             </footer>
           </section>
+          {selectedProject && <ProjectPreviewDialog project={selectedProject} onClose={() => setSelectedProject(null)} />}
         </main>
       </div>
     </GlowCursor>
