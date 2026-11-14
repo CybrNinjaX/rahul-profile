@@ -1134,6 +1134,15 @@ body { background: #060b12; }
 .hero-inner { width: min(38vw, 520px); min-height: calc(100svh - 64px); margin: 0 auto 0 5vw; padding-block: 4rem; }
 .hero-copy h1 { font-size: clamp(4.5rem, 7.2vw, 7rem); }
 .hero .scroll-cue { left: 50%; }
+.hero-inner { width: min(calc(100% - 8vw), 1320px); min-height: calc(100svh - 64px); margin-inline: auto; display: grid; grid-template-columns: minmax(280px, 410px) minmax(280px, 350px); justify-content: space-between; gap: clamp(2rem, 6vw, 7rem); align-items: center; }
+.hero-copy { max-width: 410px; }
+.hero-value-grid { display: grid; gap: .8rem; }
+.hero-value-card { padding: .85rem 1rem; border-left: 1px solid rgba(0,217,255,.52); background: linear-gradient(90deg, rgba(7,20,29,.8), rgba(7,20,29,.2)); backdrop-filter: blur(8px); }
+.hero-value-card > span { color: #71dff1; font-size: .58rem; font-weight: 700; letter-spacing: .16em; }
+.hero-value-card h2 { margin: .45rem 0 .25rem; color: #f2f8fa; font-size: 1.18rem; font-weight: 650; line-height: 1.18; letter-spacing: -.035em; }
+.hero-value-card p { margin: 0; color: #a0b0b9; font-size: .74rem; line-height: 1.55; }
+.global-avatar::before { content: ''; position: absolute; z-index: 0; inset: 0; pointer-events: none; opacity: calc(.12 + var(--about-energy, 0) * .52); background: radial-gradient(circle at 50% 44%, transparent 16%, rgba(0,217,255,.45) 16.2%, transparent 16.8%, transparent 27%, rgba(32,126,255,.35) 27.2%, transparent 27.7%), repeating-conic-gradient(from 2deg at 50% 44%, rgba(0,217,255,.12) 0deg .22deg, transparent .28deg 8deg); mask-image: radial-gradient(ellipse at 50% 44%, #000 5%, transparent 68%); mix-blend-mode: screen; }
+.global-avatar { background: radial-gradient(ellipse at 50% 43%, rgba(0,104,156,.16), transparent 36%), radial-gradient(ellipse at 50% 70%, rgba(0,65,100,.12), transparent 50%); }
 .content-section, .services-section, .contact-section { background: linear-gradient(90deg, rgba(6,11,18,.08), rgba(6,11,18,.3) 35%, rgba(6,11,18,.82) 56%, rgba(6,11,18,.97)); }
 .section-alt { background: linear-gradient(90deg, rgba(8,17,26,.08), rgba(8,17,26,.32) 35%, rgba(8,17,26,.84) 56%, rgba(8,17,26,.98)); }
 .global-avatar .avatar-canvas { z-index: 0; }
@@ -1141,15 +1150,20 @@ body { background: #060b12; }
 
 @media (max-width: 1000px) {
   .global-avatar { inset: 56px 0 0; width: auto; opacity: .92; }
-  .hero-inner { width: min(46vw, 500px); margin-left: 4vw; padding-left: 0; }
+  .hero-inner { width: calc(100% - 6vw); margin-inline: auto; grid-template-columns: minmax(250px, 1fr) minmax(250px, 320px); gap: 8vw; padding-left: 0; }
   .hero::before { background: linear-gradient(90deg, rgba(6,11,18,.86), rgba(6,11,18,.46) 36%, rgba(6,11,18,.2) 63%, rgba(6,11,18,.55)); }
   .content-section, .services-section, .contact-section, .section-alt { background: linear-gradient(90deg, rgba(6,11,18,.15), rgba(6,11,18,.55) 40%, rgba(6,11,18,.94) 72%); }
 }
 @media (max-width: 640px) {
   .global-avatar { inset: 56px 0 0; height: auto; width: auto; opacity: .75; }
   .global-avatar-fade { background: linear-gradient(0deg, rgba(6,11,18,.82), transparent 32%, rgba(6,11,18,.2)); }
-  .hero-inner { width: min(100% - 2rem, 560px); min-height: calc(100svh - 56px); margin-inline: auto; padding: 2rem 0; align-items: flex-end; }
-  .hero-copy { padding-bottom: 4rem; }
+  .hero-inner { width: min(100% - 2rem, 560px); min-height: calc(100svh - 56px); margin-inline: auto; padding: 2rem 0 4.5rem; align-items: end; grid-template-columns: 1fr; gap: .75rem; }
+  .hero-copy { padding-bottom: .45rem; }
+  .hero-value-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .35rem; }
+  .hero-value-card { padding: .55rem; border-left-width: 1px; }
+  .hero-value-card > span { font-size: .45rem; letter-spacing: .06em; }
+  .hero-value-card h2 { margin: .3rem 0 0; font-size: .82rem; }
+  .hero-value-card p { display: none; }
   .hero-copy h1 { font-size: clamp(4rem, 18vw, 6.1rem); }
   .section-wrap { width: min(100% - 2rem, 560px); }
   .content-section, .services-section, .contact-section, .section-alt { background: rgba(6,11,18,.86); }

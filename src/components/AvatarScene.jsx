@@ -2,7 +2,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, useLoader } from '@react-three/fiber'
 import { ContactShadows, Float, Html, useAnimations, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
-import { siReact, siPython, siPytorch, siFlutter, siBlender, siDjango, siPostgresql, siGithub } from 'simple-icons'
+import { siReact, siPython, siPytorch, siFlutter, siBlender, siDjango, siPostgresql, siGithub, siJavascript, siTypescript, siOpenjdk, siFastapi } from 'simple-icons'
 
 const featuredSkills = [
   { icon: siReact, color: '#61dafb' },
@@ -10,6 +10,10 @@ const featuredSkills = [
   { icon: siPytorch, color: '#ee4c2c' },
   { icon: siFlutter, color: '#54c5f8' },
   { icon: siBlender, color: '#f5792a' },
+  { icon: siJavascript, color: '#f7df1e' },
+  { icon: siTypescript, color: '#3178c6' },
+  { icon: siOpenjdk, color: '#f89820' },
+  { icon: siFastapi, color: '#009688' },
 ]
 const skillTextures = featuredSkills.map(({ icon, color }) => {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="${color}" d="${icon.path}"/></svg>`
@@ -29,7 +33,7 @@ const nodeTextureUrls = nodeData.map(({ icon, color, label, title }) => {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
 })
 
-function Model({ progress }) {
+function Model({ progress, aboutProgress }) {
   const { scene, animations } = useGLTF('/model.glb')
   const group = useRef()
   const { actions } = useAnimations(animations, group)
@@ -54,6 +58,7 @@ function Model({ progress }) {
       group.current.rotation.x = THREE.MathUtils.damp(group.current.rotation.x, eased * 0.045, 2.4, delta)
       const responsiveScale = Math.min(1, state.viewport.width / 5.1)
       group.current.scale.setScalar(THREE.MathUtils.damp(group.current.scale.x, responsiveScale, 3, delta))
+      group.current.position.x = THREE.MathUtils.damp(group.current.position.x, -1.35 * aboutProgress.current, 3.2, delta)
     }
     const cameraZ = p < 0.18
       ? THREE.MathUtils.lerp(4.35, 5.15, p / 0.18)
@@ -117,8 +122,8 @@ function FloatingSkillIcons({ progress }) {
       mesh.scale.setScalar(0.75 + spread * 0.25)
     })
   })
-  const origins = useMemo(() => [[-0.12, 0.3, 0.1], [0.14, 0.24, 0.05], [-0.1, 0.05, 0.15], [0.13, -0.18, 0.08], [-0.1, -0.3, 0.1]].map((p) => new THREE.Vector3(...p)), [])
-  const destinations = useMemo(() => [[-2.65, 1.4, 0.15], [2.65, 1.35, 0.1], [-2.85, -0.15, 0.15], [2.85, -0.25, 0.1], [-1.65, -1.75, 0.15]].map((p) => new THREE.Vector3(...p)), [])
+  const origins = useMemo(() => [[-0.12, 0.3, -1.5], [0.14, 0.24, -1.45], [-0.1, 0.05, -1.4], [0.13, -0.18, -1.5], [-0.1, -0.3, -1.45], [0.04, 0.16, -1.55], [-0.04, -0.15, -1.42], [0.08, 0.1, -1.5], [-0.1, -0.05, -1.48]].map((p) => new THREE.Vector3(...p)), [])
+  const destinations = useMemo(() => [[-2.65, 1.5, -0.25], [-1.5, 1.95, -0.45], [0, 2.2, -0.3], [1.5, 1.95, -0.2], [2.65, 1.5, -0.35], [-3, 0.05, -0.2], [3, 0.05, -0.2], [-1.75, -1.75, -0.2], [1.75, -1.75, -0.2]].map((p) => new THREE.Vector3(...p)), [])
   return (
     <group ref={group}>
       {textures.map((texture, index) => <mesh key={index} ref={(node) => { iconRefs.current[index] = node }} position={origins[index]}>
@@ -204,7 +209,7 @@ function SkillGrid({ progress }) {
   )
 }
 
-export default function AvatarScene({ progress }) {
+export default function AvatarScene({ progress, aboutProgress }) {
   return (
     <Canvas className="avatar-canvas" dpr={[1, 1.5]} camera={{ position: [0, 0.03, 4.35], fov: 34 }} gl={{ alpha: true, antialias: true }}>
       <ambientLight intensity={1.4} />
@@ -212,10 +217,10 @@ export default function AvatarScene({ progress }) {
       <spotLight position={[-3, 1.5, 2]} intensity={65} angle={0.55} penumbra={0.8} color="#00cfff" />
       <spotLight position={[3, 1, -1]} intensity={45} angle={0.5} penumbra={0.9} color="#316fff" />
       <Suspense fallback={<Html center><span className="avatar-canvas-loading">Loading avatar…</span></Html>}>
-        <Architecture progress={progress} />
-        <FloatingSkillIcons progress={progress} />
+        <Architecture progress={aboutProgress} />
+        <FloatingSkillIcons progress={aboutProgress} />
         <SkillGrid progress={progress} />
-        <Model progress={progress} />
+        <Model progress={progress} aboutProgress={aboutProgress} />
       </Suspense>
     </Canvas>
   )

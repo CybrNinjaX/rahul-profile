@@ -117,6 +117,7 @@ export default function HomePage() {
   const [selectedProject, setSelectedProject] = useState(null)
   const heroRef = useRef(null)
   const sceneProgress = useRef(0)
+  const aboutProgress = useRef(0)
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -142,6 +143,16 @@ export default function HomePage() {
       timeline.scrollTrigger?.kill()
       timeline.kill()
     }
+  }, [])
+
+  useEffect(() => {
+    const transition = gsap.to(aboutProgress, {
+      current: 1,
+      ease: 'none',
+      onUpdate: () => document.documentElement.style.setProperty('--about-energy', aboutProgress.current.toFixed(3)),
+      scrollTrigger: { trigger: '#about', start: 'top 82%', end: 'top 30%', scrub: 1 },
+    })
+    return () => { transition.scrollTrigger?.kill(); transition.kill(); document.documentElement.style.removeProperty('--about-energy') }
   }, [])
 
   useEffect(() => {
@@ -220,7 +231,7 @@ export default function HomePage() {
         </header>
 
         <div className="global-avatar" aria-hidden="true">
-          <Suspense fallback={<div className="avatar-loading"><span>RAHUL / 3D EXPERIENCE</span></div>}><AvatarScene progress={sceneProgress} /></Suspense>
+          <Suspense fallback={<div className="avatar-loading"><span>RAHUL / 3D EXPERIENCE</span></div>}><AvatarScene progress={sceneProgress} aboutProgress={aboutProgress} /></Suspense>
           <div className="global-avatar-fade" />
         </div>
 
@@ -238,6 +249,11 @@ export default function HomePage() {
                   <a className="btn btn-primary" href="#projects">View my work ↗</a>
                   <a className="btn btn-ghost" href="#contact">Let's talk →</a>
                 </div>
+              </div>
+              <div className="hero-value-grid reveal-on-scroll" aria-label="What I bring">
+                <article className="hero-value-card"><span>01 / ENGINEERING</span><h2>Full stack,<br />end to end.</h2><p>From product interface to production API.</p></article>
+                <article className="hero-value-card"><span>02 / INTELLIGENCE</span><h2>AI with<br />purpose.</h2><p>Useful machine learning and automation.</p></article>
+                <article className="hero-value-card"><span>03 / IMAGINATION</span><h2>Code meets<br />craft.</h2><p>3D, mobile, and thoughtful digital work.</p></article>
               </div>
             </div>
             <a className="scroll-cue" href="#about" aria-label="Scroll to about">
