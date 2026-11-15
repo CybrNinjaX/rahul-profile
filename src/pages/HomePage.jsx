@@ -1,8 +1,11 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import profileImage from '../assets/image.png'
 import murugerImage from '../assets/muruger.jpeg'
 import murugerModel from '../assets/muruger.stl?url'
+import { siFlutter, siOpenjdk, siPython, siReact } from 'simple-icons'
+import { Box, Brain, Cloud, Code2, Database, Layers, Workflow, Wrench } from 'lucide-react'
 import GlowCursor from '../components/GlowCursor.jsx'
 const AvatarScene = lazy(() => import('../components/AvatarScene.jsx'))
 const experience = [
@@ -29,6 +32,75 @@ const services = [
 ]
 
 const visibleProjectCount = 4
+
+const modelingTools = [
+  ['Bambu Lab A1', 'FDM printing for final prototypes and physical models.'],
+  ['Blender', 'Sculpting, retopology, UV work, and mesh cleanup before slicing.'],
+  ['Large Gaussian Model (LGM)', 'Image-to-3D generation with Gaussian splats converted to editable meshes.'],
+  ['PyMeshLab', 'Scripted mesh repair, decimation, and format conversion.'],
+  ['CSM', 'AI-assisted 3D asset generation from text and image prompts.'],
+  ['Tripo3D', 'Rapid text-to-3D and image-to-3D concept generation.'],
+  ['Meshy.ai', 'Texturing and refinement before print preparation.'],
+]
+
+const skillGroups = [
+  { title: 'Programming languages', icon: Code2, description: 'Languages for web, backend, and scripting.', skills: ['Java', 'Python', 'C', 'C++', 'TypeScript', 'JavaScript', 'Dart', 'HTML5'] },
+  { title: 'Frameworks & libraries', icon: Layers, description: 'Frameworks for interfaces, mobile, and APIs.', skills: ['Spring Boot', 'Next.js', 'Tailwind CSS', 'Flutter', 'React Native', 'Django', 'Flask', 'FastAPI'] },
+  { title: 'AI & machine learning', icon: Brain, description: 'Libraries and platforms for model work.', skills: ['Hugging Face Transformers', 'Scikit-learn', 'TorchAudio', 'Google Colab', 'Kaggle'] },
+  { title: 'Databases', icon: Database, description: 'Relational and document data stores.', skills: ['MongoDB', 'MySQL', 'PostgreSQL'] },
+  { title: 'Cloud & backend services', icon: Cloud, description: 'Cloud platforms and managed services.', skills: ['Amazon Web Services', 'Firebase', 'Supabase', 'Docker'] },
+  { title: 'Automation & testing', icon: Workflow, description: 'Workflow automation and quality checks.', skills: ['n8n', 'Selenium', 'Jira'] },
+  { title: '3D modeling & printing', icon: Box, description: 'From generated meshes to print-ready models.', skills: ['Blender', 'Bambu Lab A1', 'Large Gaussian Model (LGM)', 'PyMeshLab', 'CSM', 'Tripo3D', 'Meshy.ai'], workflow: modelingTools },
+  { title: 'Tools & development environment', icon: Wrench, description: 'Everyday tools for building and shipping.', skills: ['Git', 'GitHub', 'Visual Studio Code', 'Android Studio', 'Postman', 'Linux'] },
+]
+
+const aboutTechIcons = [
+  { label: 'Java', icon: siOpenjdk },
+  { label: 'Python', icon: siPython },
+  { label: 'Flutter', icon: siFlutter },
+  { label: 'React', icon: siReact },
+  { label: 'AWS', src: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg', color: '#ff9900' },
+]
+
+const skillLogoPaths = {
+  Java: 'java/java-original.svg', Python: 'python/python-original.svg', C: 'c/c-original.svg', 'C++': 'cplusplus/cplusplus-original.svg',
+  TypeScript: 'typescript/typescript-original.svg', JavaScript: 'javascript/javascript-original.svg', Dart: 'dart/dart-original.svg', HTML5: 'html5/html5-original.svg',
+  'Spring Boot': 'spring/spring-original.svg', 'Next.js': 'nextjs/nextjs-original.svg', 'Tailwind CSS': 'tailwindcss/tailwindcss-original.svg', Flutter: 'flutter/flutter-original.svg',
+  'React Native': 'react/react-original.svg', Django: 'django/django-plain.svg', Flask: 'flask/flask-original.svg', FastAPI: 'fastapi/fastapi-original.svg',
+  'Scikit-learn': 'scikitlearn/scikitlearn-original.svg', TorchAudio: 'pytorch/pytorch-original.svg', 'Google Colab': 'googlecolab/googlecolab-original.svg', Kaggle: 'kaggle/kaggle-original.svg',
+  MongoDB: 'mongodb/mongodb-original.svg', MySQL: 'mysql/mysql-original.svg', PostgreSQL: 'postgresql/postgresql-original.svg',
+  'Amazon Web Services': 'amazonwebservices/amazonwebservices-original.svg', Firebase: 'firebase/firebase-original.svg', Supabase: 'supabase/supabase-original.svg', Docker: 'docker/docker-original.svg',
+  Selenium: 'selenium/selenium-original.svg', Jira: 'jira/jira-original.svg', Blender: 'blender/blender-original.svg',
+  Git: 'git/git-original.svg', GitHub: 'github/github-original.svg', 'Visual Studio Code': 'vscode/vscode-original.svg', 'Android Studio': 'androidstudio/androidstudio-original.svg', Postman: 'postman/postman-original.svg', Linux: 'linux/linux-original.svg',
+}
+
+function SkillGlyph({ name }) {
+  const [failed, setFailed] = useState(false)
+  const path = skillLogoPaths[name]
+  const initials = name.split(/[\s.+()-]+/).filter(Boolean).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
+  return (
+    <li className="skill-icon-item" title={name}>
+      {path && !failed
+        ? <img className="skill-brand-mark" src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${path}`} alt="" loading="lazy" onError={() => setFailed(true)} />
+        : <span className="skill-brand-fallback" aria-hidden="true">{initials}</span>}
+      <span>{name}</span>
+    </li>
+  )
+}
+
+function AboutTechOrbit() {
+  return (
+    <div className="about-tech-orbit" aria-label="Java, Python, Flutter, React, and AWS">
+      {aboutTechIcons.map(({ label, icon, src, color }) => (
+        <span className="about-tech-mark" key={label} title={label}>
+          {icon
+            ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d={icon.path} fill={`#${icon.hex}`} /></svg>
+            : <img src={src} alt="" style={{ '--mark-color': color }} />}
+        </span>
+      ))}
+    </div>
+  )
+}
 
 function ProjectCard({ project, index, onPreview }) {
   const coverClass = project.download ? 'project-cover project-cover-model' : 'project-cover'
@@ -96,92 +168,52 @@ export default function HomePage() {
   const [activeSection, setActiveSection] = useState('home')
   const [selectedProject, setSelectedProject] = useState(null)
   const heroRef = useRef(null)
-  const sceneProgress = useRef(0)
-  const aboutProgress = useRef(0)
-  const aboutIconPresence = useRef(0)
-  const skillsProgress = useRef(0)
-  const cursorPosition = useRef({ x: 0, y: 0 })
-
+  const modelLayout = useRef({ x: 0, y: 0, scale: 1, cameraZ: 6.6, rotation: 0 })
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
-    const hero = heroRef.current
-    if (!hero) return undefined
-    const timeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: hero,
-        start: 'top top',
-        endTrigger: document.querySelector('#projects'),
-        end: 'bottom bottom',
-        scrub: 1,
-        invalidateOnRefresh: true,
+    const progressTrigger = ScrollTrigger.create({
+      trigger: document.body,
+      start: 'top top',
+      end: 'bottom bottom',
+      onUpdate: (self) => {
+        document.documentElement.style.setProperty('--scroll-progress', `${(self.progress * 100).toFixed(2)}%`)
+        modelLayout.current.rotation = self.progress * Math.PI * 2
+        document.querySelector('.site-header')?.classList.toggle('is-scrolled', self.scroll() > 12)
       },
     })
-    timeline
-      .to(sceneProgress, { current: 0.2, duration: 1, ease: 'none' })
-      .to(sceneProgress, { current: 0.4, duration: 1, ease: 'none' })
-      .to(sceneProgress, { current: 0.64, duration: 1.3, ease: 'none' })
-      .to(sceneProgress, { current: 0.64, duration: 0.4, ease: 'none' })
-      .to(sceneProgress, { current: 1, duration: 1.5, ease: 'none' })
-    return () => {
-      timeline.scrollTrigger?.kill()
-      timeline.kill()
-    }
-  }, [])
-
-  useEffect(() => {
-    const cardStops = Array.from({ length: 9 }, (_, index) => ((0.16 + index * 0.08) / 0.92) * 0.82)
-    const timeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#skills .skills-lock-stage',
-        start: 'top top',
-        end: () => `+=${Math.round(window.innerHeight * 2.8)}`,
-        pin: true,
-        pinSpacing: true,
-        scrub: 0.5,
-        invalidateOnRefresh: true,
-        snap: {
-          snapTo: [0, ...cardStops, 0.82, 0.9, 0.94, 1],
-          duration: { min: 0.15, max: 0.45 },
-          delay: 0.12,
-          ease: 'power1.inOut',
-        },
-      },
-    })
-    timeline
-      .to(skillsProgress, { current: 0.92, duration: 0.82, ease: 'none' })
-      .to(skillsProgress, { current: 0.92, duration: 0.12, ease: 'none' })
-      .to(skillsProgress, { current: 1, duration: 0.06, ease: 'none' })
-    return () => {
-      timeline.scrollTrigger?.kill()
-      timeline.kill()
-    }
-  }, [])
-
-  useEffect(() => {
-    const transition = gsap.to(aboutProgress, {
-      current: 1,
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const portrait = document.querySelector('.contact-portrait-image')
+    const portraitMotion = portrait && !reduceMotion ? gsap.to(portrait, {
+      yPercent: 7,
+      scale: 1.055,
       ease: 'none',
-      onUpdate: () => document.documentElement.style.setProperty('--about-energy', aboutProgress.current.toFixed(3)),
-      scrollTrigger: { trigger: '#about', start: 'top 82%', end: 'top 30%', scrub: 1 },
-    })
-    return () => { transition.scrollTrigger?.kill(); transition.kill(); document.documentElement.style.removeProperty('--about-energy') }
+      scrollTrigger: { trigger: '#contact', start: 'top bottom', end: 'bottom top', scrub: 0.7 },
+    }) : null
+    return () => {
+      progressTrigger.kill()
+      portraitMotion?.scrollTrigger?.kill()
+      portraitMotion?.kill()
+      document.documentElement.style.removeProperty('--scroll-progress')
+    }
   }, [])
 
   useEffect(() => {
-    const timeline = gsap.timeline({
-      scrollTrigger: { trigger: '#about', start: 'top bottom', end: 'bottom top', scrub: 0.4 },
-    })
-    timeline
-      .to(aboutIconPresence, { current: 1, duration: 0.16, ease: 'none' })
-      .to(aboutIconPresence, { current: 1, duration: 0.68, ease: 'none' })
-      .to(aboutIconPresence, { current: 0, duration: 0.16, ease: 'none' })
-    return () => { timeline.scrollTrigger?.kill(); timeline.kill() }
-  }, [])
+    const sideShift = window.innerWidth < 680 ? 0.9 : window.innerWidth < 960 ? 1.35 : 2.05
+    const poses = {
+      home: { x: 0, y: 0, scale: 1.02, cameraZ: 6.5 },
+      about: { x: -sideShift, y: 0, scale: 0.88, cameraZ: 7.15 },
+      skills: { x: 0, y: 0, scale: 0.76, cameraZ: 8.15 },
+      experience: { x: -sideShift, y: 0, scale: 0.9, cameraZ: 7.25 },
+      projects: { x: -sideShift, y: 0, scale: 0.9, cameraZ: 7.25 },
+      services: { x: sideShift, y: 0, scale: 0.9, cameraZ: 7.25 },
+      contact: { x: 0, y: 0, scale: 0.8, cameraZ: 7.5 },
+    }
+    const tween = gsap.to(modelLayout.current, { ...poses[activeSection], duration: 1, ease: 'power3.inOut' })
+    return () => tween.kill()
+  }, [activeSection])
 
   useEffect(() => {
     const handlePointerMove = (event) => {
-      cursorPosition.current.x = (event.clientX / window.innerWidth) * 2 - 1
-      cursorPosition.current.y = (event.clientY / window.innerHeight) * 2 - 1
       const bounds = heroRef.current?.getBoundingClientRect()
       if (bounds) {
         heroRef.current.style.setProperty('--pointer-x', `${event.clientX - bounds.left}px`)
@@ -220,6 +252,10 @@ export default function HomePage() {
     if (!sections.length) return undefined
     const observer = new IntersectionObserver((entries) => {
       const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)
+      visible.forEach(({ target }) => {
+        target.classList.add('is-visible')
+        target.querySelectorAll('.section-heading').forEach((heading) => heading.classList.add('is-visible'))
+      })
       if (visible.length > 0) setActiveSection(visible[0].target.id)
     }, { threshold: [0.15, 0.4, 0.65], rootMargin: '-15% 0px -40% 0px' })
     sections.forEach((s) => observer.observe(s))
@@ -267,37 +303,31 @@ export default function HomePage() {
           </div>
         </header>
 
-        <div className={`global-avatar${activeSection === 'skills' ? ' is-skills' : ''}`} aria-hidden="true">
-          <Suspense fallback={<div className="avatar-loading"><span>RAHUL / 3D EXPERIENCE</span></div>}><AvatarScene progress={sceneProgress} aboutProgress={aboutProgress} iconsProgress={aboutIconPresence} skillsProgress={skillsProgress} cursor={cursorPosition} /></Suspense>
+        <div className={`global-avatar${activeSection === 'contact' ? ' is-hidden' : ''}`} aria-hidden="true">
+          <Suspense fallback={<div className="avatar-loading"><span>Loading 3D model</span></div>}><AvatarScene layout={modelLayout} /></Suspense>
           <div className="global-avatar-fade" />
+          {activeSection === 'about' && <AboutTechOrbit />}
         </div>
 
         <main>
           <section className="hero" id="home" ref={heroRef}>
-            <div className="hero-code-layer" aria-hidden="true">
-              <span className="code-snippet code-snippet-one">const future = await build();</span>
-              <span className="code-snippet code-snippet-two">&lt;Canvas camera=&#123;scene&#125; /&gt;</span>
-              <span className="code-snippet code-snippet-three">from torch import nn</span>
-              <span className="code-snippet code-snippet-four">if (idea) ship(idea)</span>
-              <span className="code-coordinate">37° 00′ N &nbsp; / &nbsp; 8F3A</span>
-            </div>
             <div className="hero-inner">
-              <div className="hero-copy reveal-on-scroll">
-                <p className="availability"><span className="dot" /> Available for freelance work</p>
-                <h1>
-                  <span className="h1-hi">Rahul<span className="hero-period">.</span></span>
-                </h1>
-                <p className="hero-role">Full-Stack Developer</p>
-                <p className="hero-summary">AI / ML enthusiast<br />3D modeling &amp; printing nerd</p>
-                <div className="hero-actions">
-                  <a className="btn btn-primary" href="#projects">View my work ↗</a>
-                  <a className="btn btn-ghost" href="#contact">Let's talk →</a>
+              <div className="hero-intro">
+                <div className="hero-copy reveal-on-scroll">
+                  <p className="availability"><span className="dot" /> Available for freelance work</p>
+                  <h1><span className="h1-hi">Rahul<span className="hero-period">.</span></span></h1>
+                  <p className="hero-role">Full-Stack Developer</p>
+                  <p className="hero-summary">AI / ML enthusiast<br />3D modeling &amp; printing nerd</p>
+                  <div className="hero-actions">
+                    <a className="btn btn-primary" href="#projects">View my work ↗</a>
+                    <a className="btn btn-ghost" href="#contact">Let's talk →</a>
+                  </div>
                 </div>
-              </div>
-              <div className="hero-value-grid reveal-on-scroll" aria-label="What I bring">
-                <article className="hero-value-card"><span>01 / ENGINEERING</span><h2>Full-stack</h2><p>From product interface to production API.</p></article>
-                <article className="hero-value-card"><span>02 / INTELLIGENCE</span><h2>Applied AI</h2><p>Useful machine learning and automation.</p></article>
-                <article className="hero-value-card"><span>03 / IMAGINATION</span><h2>Creative tech</h2><p>3D, mobile, and thoughtful digital work.</p></article>
+                <div className="hero-value-grid reveal-on-scroll" aria-label="What I bring">
+                  <article className="hero-value-card"><span>01 / ENGINEERING</span><h2>Full-stack</h2><p>From product interface to production API.</p></article>
+                  <article className="hero-value-card"><span>02 / INTELLIGENCE</span><h2>Applied AI</h2><p>Useful machine learning and automation.</p></article>
+                  <article className="hero-value-card"><span>03 / IMAGINATION</span><h2>Creative tech</h2><p>3D, mobile, and thoughtful digital work.</p></article>
+                </div>
               </div>
             </div>
             <a className="scroll-cue" href="#about" aria-label="Scroll to about">
@@ -325,9 +355,23 @@ export default function HomePage() {
           </section>
 
           <section className="content-section section-alt" id="skills">
-            <div className="skills-lock-stage">
-              <div className="section-wrap skills-lock-copy">
-                <SectionHeading number="02" label="SKILLS" title="Tools I work with" />
+            <div className="skills-overview">
+              <div className="skills-overview-heading">
+                <SectionHeading number="02" label="SKILLS" title="A stack built for making" />
+                <div className="skills-overview-meta"><p>Tools I use to design, build, test, and ship software and creative projects.</p><span><b>08</b> skill areas</span></div>
+              </div>
+              <div className="skills-category-grid">
+                {skillGroups.map((group, index) => {
+                  const CategoryIcon = group.icon
+                  return <article className={`skill-domain skill-domain-${index + 1} reveal-on-scroll`} key={group.title} style={{ '--card-delay': `${index * 65}ms` }}>
+                    <div className="skill-domain-heading">
+                      <span className="skill-domain-symbol" aria-hidden="true"><CategoryIcon size={19} strokeWidth={1.8} /></span>
+                      <div><p className="item-overline">DOMAIN {String(index + 1).padStart(2, '0')}</p><h3>{group.title}</h3><p className="skill-category-description">{group.description}</p></div>
+                    </div>
+                    <ul className="skill-icon-cloud">{group.skills.map((skill) => <SkillGlyph key={skill} name={skill} />)}</ul>
+                    {group.workflow && <details className="workflow-details"><summary>View modeling workflow</summary><ul className="workflow-list">{group.workflow.map(([tool, role]) => <li key={tool}><strong>{tool}</strong><span>{role}</span></li>)}</ul></details>}
+                  </article>
+                })}
               </div>
             </div>
           </section>
@@ -400,6 +444,10 @@ export default function HomePage() {
           </section>
 
           <section className="contact-section" id="contact">
+            <div className="contact-portrait" aria-hidden="true">
+              <img className="contact-portrait-image" src={profileImage} alt="" loading="lazy" />
+              <div className="contact-portrait-shade" />
+            </div>
             <div className="section-wrap">
               <div className="contact-inner reveal-on-scroll">
                 <div className="contact-left">
