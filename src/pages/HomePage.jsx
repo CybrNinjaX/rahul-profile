@@ -6,6 +6,8 @@ import murugerImage from '../assets/muruger.jpeg'
 import murugerModel from '../assets/muruger.stl?url'
 import { Box, Brain, Cloud, Code2, Database, Layers, Workflow, Wrench } from 'lucide-react'
 import PlasmaWave from '../components/PlasmaWave.jsx'
+import ParticleText from '../components/ParticleText.jsx'
+import StrokeText from '../components/StrokeText.jsx'
 
 const AvatarScene = lazy(() => import('../components/AvatarScene.jsx'))
 
@@ -388,6 +390,8 @@ function SectionHeading({ number, label, title, light }) {
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
+  const activeSectionRef = useRef(activeSection)
+  activeSectionRef.current = activeSection
   const [selectedProject, setSelectedProject] = useState(null)
   const modelLayout = useRef({ x: 0, y: 0, scale: 1, cameraZ: 6.6, rotation: 0 })
 
@@ -404,7 +408,9 @@ export default function HomePage() {
           '--scroll-progress',
           `${(self.progress * 100).toFixed(2)}%`
         )
-        modelLayout.current.rotation = self.progress * Math.PI * 2
+        if (activeSectionRef.current !== 'experience') {
+          modelLayout.current.rotation = self.progress * Math.PI * 2
+        }
         document.querySelector('.site-header')?.classList.toggle('is-scrolled', self.scroll() > 12)
       },
     })
@@ -454,7 +460,7 @@ export default function HomePage() {
         },
         about: { x: -sideShift * 0.95, y: 0, scale: 0.92, cameraZ: 7.1 },
         skills: { x: 0, y: 0.05, scale: 0.78, cameraZ: 8.0 },
-        experience: { x: -sideShift * 0.9, y: 0, scale: 0.92, cameraZ: 7.2 },
+        experience: { x: -sideShift * 0.9, y: 0, scale: 0.92, cameraZ: 7.2, rotation: 0.32 },
         projects: { x: -sideShift * 0.9, y: 0, scale: 0.92, cameraZ: 7.2 },
         services: { x: sideShift * 0.9, y: 0, scale: 0.92, cameraZ: 7.2 },
         contact: { x: 0, y: 0, scale: 0.82, cameraZ: 7.4 },
@@ -623,7 +629,7 @@ export default function HomePage() {
 
         {/* Global 3D Avatar */}
         <div
-          className={`global-avatar${activeSection === 'contact' ? ' is-hidden' : ''}${activeSection === 'home' ? ' is-home' : ''}`}
+          className={`global-avatar${activeSection === 'contact' ? ' is-hidden' : ''}${activeSection === 'home' ? ' is-home' : ''}${activeSection === 'about' ? ' is-about' : ''}${activeSection === 'skills' ? ' is-skills' : ''}${activeSection === 'experience' ? ' is-experience' : ''}`}
           aria-hidden="true"
         >
           {activeSection === 'home' && (
@@ -646,7 +652,7 @@ export default function HomePage() {
               </div>
             }
           >
-            <AvatarScene layout={modelLayout} />
+            <AvatarScene layout={modelLayout} activeSection={activeSection} />
           </Suspense>
           <div className="global-avatar-fade" />
         </div>
@@ -713,7 +719,10 @@ export default function HomePage() {
           {/* ========== ABOUT ========== */}
           <section className="content-section" id="about">
             <div className="section-wrap">
-              <SectionHeading number="01" label="ABOUT" title="A little about me" />
+              <div className="section-heading about-heading">
+                <p className="section-label">01 <span>/</span> ABOUT</p>
+                <h2><StrokeText text="A little about me" strokeColor="#35DFFF" strokeWidth={1.4} drawDuration={1.6} fillDelay={0.2} stagger={0.05} trigger="mount" fillMode="wipe" wipeFrom="left" fontSize="clamp(2.25rem, 4.4vw, 3.3rem)" fontWeight={700} letterSpacing={-2} hoverRedraw /></h2>
+              </div>
               <div className="about-grid">
                 <div className="about-text reveal-on-scroll">
                   <p>
@@ -725,6 +734,32 @@ export default function HomePage() {
                     I like turning ideas into practical projects, learning new technologies, and
                     making software that solves real problems.
                   </p>
+                </div>
+                <div className="about-particle-wrap reveal-on-scroll">
+                  <ParticleText
+                    text="Build with curiosity"
+                    particleSize={2}
+                    density={4}
+                    color="currentColor"
+                    highlightColor="#35dfff"
+                    highlightMode="motion"
+                    shape="circle"
+                    intro="gather"
+                    scatter={180}
+                    gatherDuration={1600}
+                    stagger={420}
+                    clickBurst
+                    burstStrength={1}
+                    pointerRepel={40}
+                    repelRadius={120}
+                    idleDrift={0.7}
+                    trigger="hover"
+                    fontSize="clamp(2rem, 3vw, 3.4rem)"
+                    fontWeight={800}
+                    fontFamily="inherit"
+                    glow
+                  />
+                  <span>Move your cursor through the words</span>
                 </div>
                 <div className="about-cards reveal-on-scroll">
                   <div className="about-card">

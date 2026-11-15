@@ -1,9 +1,10 @@
 import { Component, Suspense, useEffect, useMemo, useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { ContactShadows, Float, Html, useAnimations, useGLTF } from '@react-three/drei'
+import { ContactShadows, Float, useAnimations, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
+import CrystalizedBall from './CrystalizedBall.jsx'
 
-function Model({ layout }) {
+function Model({ layout, activeSection }) {
   const { scene, animations } = useGLTF('/model.glb')
   const group = useRef()
   const { actions } = useAnimations(animations, group)
@@ -97,28 +98,42 @@ function Model({ layout }) {
   })
 
   return (
-    <group ref={group}>
-      <Float
-        speed={0.55}
-        rotationIntensity={0.012}
-        floatIntensity={0.028}
-      >
-        <primitive
-          object={model}
-          position={fitted.position}
-          scale={fitted.scale}
+    <>
+      {activeSection === 'skills' && (
+        <CrystalizedBall
+          preset="plasma"
+          color="#35DFFF"
+          size={0.7}
+          crackle={0.85}
+          fill={0.5}
+          interactive
+          hoverStrength={0.7}
         />
-      </Float>
+      )}
 
-      <ContactShadows
-        position={[0, -1.55, 0]}
-        opacity={0.38}
-        scale={5.2}
-        blur={2.8}
-        far={3.5}
-        color="#001820"
-      />
-    </group>
+      <group ref={group}>
+        <Float
+          speed={0.55}
+          rotationIntensity={0.012}
+          floatIntensity={0.028}
+        >
+          <primitive
+            object={model}
+            position={fitted.position}
+            scale={fitted.scale}
+          />
+        </Float>
+
+        <ContactShadows
+          position={[0, -1.55, 0]}
+          opacity={0.38}
+          scale={5.2}
+          blur={2.8}
+          far={3.5}
+          color="#001820"
+        />
+      </group>
+    </>
   )
 }
 
@@ -142,7 +157,7 @@ class AvatarErrorBoundary extends Component {
   }
 }
 
-export default function AvatarScene({ layout }) {
+export default function AvatarScene({ layout, activeSection }) {
   return (
     <AvatarErrorBoundary>
       <Canvas
@@ -178,12 +193,13 @@ export default function AvatarScene({ layout }) {
 
         <Suspense
           fallback={
-            <Html center>
-              <span className="avatar-canvas-loading">Loading model…</span>
-            </Html>
+            <mesh>
+              <icosahedronGeometry args={[0.16, 1]} />
+              <meshBasicMaterial color="#00c9ef" wireframe />
+            </mesh>
           }
         >
-          <Model layout={layout} />
+          <Model layout={layout} activeSection={activeSection} />
         </Suspense>
       </Canvas>
     </AvatarErrorBoundary>
