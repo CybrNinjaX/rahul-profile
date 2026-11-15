@@ -1,6 +1,6 @@
 import { Component, Suspense, useEffect, useMemo, useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { ContactShadows, Float, useAnimations, useGLTF } from '@react-three/drei'
+import { ContactShadows, Float, Html, useAnimations, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import CrystalizedBall from './CrystalizedBall.jsx'
 
@@ -193,10 +193,9 @@ export default function AvatarScene({ layout, activeSection }) {
 
         <Suspense
           fallback={
-            <mesh>
-              <icosahedronGeometry args={[0.16, 1]} />
-              <meshBasicMaterial color="#00c9ef" wireframe />
-            </mesh>
+            <Html center>
+              <span className="avatar-loading">Loading 3D Model...</span>
+            </Html>
           }
         >
           <Model layout={layout} activeSection={activeSection} />
