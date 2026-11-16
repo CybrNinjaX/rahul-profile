@@ -40,7 +40,7 @@ export default function Skills() {
               <div className="skills-overview-heading">
                 <SectionHeading number="02" label="SKILLS" title="A stack built for making" />
                 <div className="skills-overview-meta">
-                  <p>Tools I use to design, build, test, and ship software and creative projects.</p>
+                  <p>Languages, frameworks, platforms, and creative tools I use across software and 3D work.</p>
                   <span>
                     <b>08</b> skill areas
                   </span>
@@ -77,7 +77,7 @@ export default function Skills() {
 
                       {group.workflow && (
                         <details className="workflow-details">
-                          <summary>View modeling workflow</summary>
+                          <summary>Explore my 3D workflow</summary>
                           <ul className="workflow-list">
                             {group.workflow.map(([tool, role]) => (
                               <li key={tool}>

@@ -36,13 +36,13 @@ export default function Contact() {
                     06 <span>/</span> CONTACT
                   </p>
                   <h2>
-                    Have a project
+                    Have a good idea?
                     <br />
-                    in mind?
+                    Let's build it.
                   </h2>
                   <p className="contact-intro">
-                    I'm always happy to talk about good ideas and interesting work. Drop me a
-                    message and I'll get back to you.
+                    Tell me what you're working on, where you need help, and what a good outcome
+                    looks like. I’ll get back to you by email.
                   </p>
                   <a className="btn btn-primary" href="mailto:rahul63794@gmail.com">
                     Say hello ↗

@@ -9,6 +9,7 @@ import Experience from '../components/sections/Experience.jsx'
 import Projects from '../components/sections/Projects.jsx'
 import Services from '../components/sections/Services.jsx'
 import Contact from '../components/sections/Contact.jsx'
+import PlasmaWave from '../components/animations/PlasmaWave.jsx'
 
 const AvatarScene = lazy(() => import('../components/sections/AvatarScene.jsx'))
 
@@ -205,6 +206,19 @@ export default function Home() {
           className={`global-avatar${activeSection === 'contact' ? ' is-hidden' : ''}${activeSection === 'home' ? ' is-home' : ''}${activeSection === 'about' ? ' is-about' : ''}${activeSection === 'skills' ? ' is-skills' : ''}${activeSection === 'experience' ? ' is-experience' : ''}`}
           aria-hidden="true"
         >
+          {activeSection === 'home' && (
+            <PlasmaWave
+              className="home-plasma-wave"
+              colors={['#a98aff', '#63d8d0']}
+              speed={0.48}
+              brightness={0.42}
+              glow={0.68}
+              quality={0.5}
+              mouseInteraction={false}
+              opacity={0.58}
+              aria-hidden="true"
+            />
+          )}
           <Suspense
             fallback={
               <div className="avatar-loading">

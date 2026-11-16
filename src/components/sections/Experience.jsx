@@ -5,7 +5,7 @@ export default function Experience() {
   return (
 <section className="content-section" id="experience">
             <div className="section-wrap">
-              <SectionHeading number="03" label="EXPERIENCE" title="Where I've worked" />
+              <SectionHeading number="03" label="EXPERIENCE" title="Experience in practice" />
               <div className="experience-list">
                 {experience.map((job) => (
                   <details

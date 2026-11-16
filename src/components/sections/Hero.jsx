@@ -1,19 +1,8 @@
 import EchoText from '../animations/EchoText.jsx'
-import GlowCursor from '../animations/GlowCursor.jsx'
 
 export default function Hero() {
   return (
 <section className="hero" id="home" aria-labelledby="hero-title">
-            <GlowCursor
-              className="hero-glow-cursor"
-              color="#a98aff"
-              secondaryColor="#70e8db"
-              intensity={0.8}
-              trailWidth={1.8}
-              quality="medium"
-              clickBurst={false}
-              aria-hidden="true"
-            />
             <div className="hero-atmosphere" aria-hidden="true">
               <div className="hero-model-glow" />
               <div className="hero-model-ring" />
@@ -41,6 +30,7 @@ export default function Hero() {
                     <span className="h1-hi">
                       <EchoText
                         text="Rahul"
+                        fontSize="inherit"
                         className="hero-name-echo"
                         echoes={7}
                         offset={20}
@@ -53,11 +43,13 @@ export default function Hero() {
                     </span>
                   </h1>
 
-                  <p className="hero-role"><span>Full-Stack Developer</span><i aria-hidden="true" /></p>
+                  <p className="hero-role">
+                    <span>Full-Stack Developer</span>
+                    <i aria-hidden="true" />
+                  </p>
                   <p className="hero-summary">
-                    AI / ML enthusiast
-                    <br />
-                    3D modeling &amp; printing nerd
+                    I build useful web products, explore applied AI, and bring ideas into the
+                    physical world through 3D modeling and printing.
                   </p>
 
                   <div className="hero-actions">
@@ -70,23 +62,6 @@ export default function Hero() {
                   </div>
                 </div>
 
-                <div className="hero-value-grid reveal-on-scroll" aria-label="What I bring">
-                  <article className="hero-value-card">
-                    <span>01 / ENGINEERING</span>
-                    <h2>Full-stack</h2>
-                    <p>From product interface to production API.</p>
-                  </article>
-                  <article className="hero-value-card">
-                    <span>02 / INTELLIGENCE</span>
-                    <h2>Applied AI</h2>
-                    <p>Useful machine learning and automation.</p>
-                  </article>
-                  <article className="hero-value-card">
-                    <span>03 / IMAGINATION</span>
-                    <h2>Creative tech</h2>
-                    <p>3D, mobile, and thoughtful digital work.</p>
-                  </article>
-                </div>
               </div>
             </div>
 

@@ -129,6 +129,10 @@ export default function Projects({ selectedProject, setSelectedProject }) {
       <section className="content-section section-alt" id="projects">
             <div className="section-wrap">
               <SectionHeading number="04" label="SELECTED PROJECTS" title="A few things I've built" />
+              <p className="projects-intro">
+                A mix of commerce, finance, product showcases, and 3D work—each built around a
+                specific idea and use case.
+              </p>
               <div className="projects-grid">
                 {projects.slice(0, visibleProjectCount).map((project, index) => (
                   <ProjectCard
