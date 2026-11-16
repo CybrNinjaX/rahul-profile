@@ -88,7 +88,7 @@ body { background: #090a0e; color: var(--page-ink); }
   z-index: 0;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(90deg, #090a0e 0%, rgba(9,10,14,.9) 33%, rgba(9,10,14,.15) 78%, #090a0e 100%);
+  background: radial-gradient(ellipse at center, rgba(9,10,14,.28), rgba(9,10,14,.68) 68%, #090a0e 100%);
 }
 .hero-atmosphere { z-index: 1; opacity: .66; }
 .hero-atmosphere::before { opacity: .12; }
@@ -107,13 +107,23 @@ body { background: #090a0e; color: var(--page-ink); }
   box-shadow: 0 12px 38px #0005, inset 0 1px #ffffff12;
 }
 .hero-code { color: rgba(211,203,234,.14); }
-.hero-inner { position: relative; z-index: 3; width: min(calc(100% - 56px), 1160px); min-height: calc(100svh - 76px); padding-block: 5rem 6rem; }
-.hero-intro { width: 100%; max-width: 630px; }
-.hero-copy { max-width: 630px; }
+.hero-inner {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  width: min(calc(100% - 56px), 1160px);
+  min-height: calc(100svh - 76px);
+  padding-block: 5rem 6rem;
+}
+.hero-intro { width: 100%; max-width: 760px; }
+.hero-copy { max-width: 760px; margin-inline: auto; text-align: center; }
 .availability {
   display: inline-flex;
   align-items: center;
   margin: 0 0 1.8rem;
+  margin-inline: auto;
   padding: .58rem .9rem;
   border: 1px solid rgba(189,255,131,.2);
   border-radius: 999px;
@@ -129,8 +139,8 @@ body { background: #090a0e; color: var(--page-ink); }
 .hero-period { color: var(--page-mint); }
 .hero-role { color: #e0d7f7; font-size: clamp(1rem, 1.7vw, 1.35rem); letter-spacing: -.02em; }
 .hero-role i { background: var(--page-violet); box-shadow: 0 0 14px #b89cff9c; }
-.hero-summary { max-width: 29ch; color: #a5a5b2; font-size: 1rem; line-height: 1.75; }
-.hero .hero-actions { margin-top: 2rem; }
+.hero-summary { max-width: 56ch; margin: 1.15rem auto 0; color: #b5b2c0; font-size: clamp(1rem, 1.45vw, 1.18rem); line-height: 1.8; text-wrap: balance; }
+.hero .hero-actions { justify-content: center; margin-top: 2rem; }
 .hero .btn { min-height: 52px; padding-inline: 1.4rem; border-radius: 999px; font-size: .83rem; }
 .hero .btn-primary { color: #10110e; background: var(--page-mint); box-shadow: 0 8px 34px rgba(189,255,131,.18); }
 .hero .btn-primary:hover { background: #d1ffab; box-shadow: 0 12px 40px rgba(189,255,131,.28); }
@@ -143,8 +153,7 @@ body { background: #090a0e; color: var(--page-ink); }
 .hero-value-card p { max-width: 25ch; color: var(--page-muted); font-size: .73rem; line-height: 1.6; }
 .scroll-cue { color: #858692; font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; }
 .scroll-cue .scroll-line { background: linear-gradient(var(--page-mint), transparent); }
-.global-avatar.is-home { opacity: .84; }
-.global-avatar.is-home .avatar-canvas { filter: drop-shadow(0 24px 90px rgba(159,133,220,.22)); }
+.global-avatar.is-home { opacity: .62; }
 
 /* Shared section rhythm and headings */
 .content-section, .services-section, .contact-section { padding-block: clamp(6rem, 11vw, 9.5rem); border-color: rgba(223,220,239,.1); }
@@ -284,15 +293,13 @@ body { background: #090a0e; color: var(--page-ink); }
   .section-wrap, .hero-inner, .skills-overview { width: min(calc(100% - 36px), 600px); }
   .site-header .header-inner { height: 66px; }
   .hero { min-height: calc(100svh - 66px); }
-  .hero-inner { min-height: calc(100svh - 66px); padding-block: min(45svh, 355px) 4rem; }
-  .hero-intro { width: 100%; }
+  .hero-inner { min-height: calc(100svh - 66px); padding-block: 3rem; }
+  .hero-intro { width: 100%; max-width: 600px; }
   .hero-copy h1 { font-size: clamp(4.5rem, 18vw, 6.5rem); }
-  .hero-summary { font-size: .94rem; }
+  .hero-summary { max-width: 38ch; font-size: .96rem; }
   .hero-value-grid { grid-template-columns: 1fr; margin-top: 2.2rem; }
   .hero-value-card { min-height: auto; padding: .9rem .25rem; border-bottom: 1px solid var(--page-line); }
   .hero-value-card p { display: block; }
-  .hero-atmosphere { opacity: .46; }
-  .hero-atmosphere .hero-tech-chip-2, .hero-atmosphere .hero-tech-chip-5, .hero-atmosphere .hero-tech-chip-6, .hero-atmosphere .hero-tech-chip-7, .hero-atmosphere .hero-tech-chip-8, .hero-code { display: none; }
   .content-section, .services-section, .contact-section { padding-block: 5rem; }
   .skills-overview-heading { display: block; }
   .skills-overview-meta { margin-top: 1.4rem; }

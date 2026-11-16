@@ -215,19 +215,21 @@ export default function Home() {
               glow={0.68}
               quality={0.5}
               mouseInteraction={false}
-              opacity={0.58}
+              opacity={0.42}
               aria-hidden="true"
             />
           )}
-          <Suspense
-            fallback={
-              <div className="avatar-loading">
-                <span>Loading 3D model</span>
-              </div>
-            }
-          >
-            <AvatarScene layout={modelLayout} activeSection={activeSection} />
-          </Suspense>
+          {activeSection !== 'home' && (
+            <Suspense
+              fallback={
+                <div className="avatar-loading">
+                  <span>Loading 3D model</span>
+                </div>
+              }
+            >
+              <AvatarScene layout={modelLayout} activeSection={activeSection} />
+            </Suspense>
+          )}
           <div className="global-avatar-fade" />
         </div>
 

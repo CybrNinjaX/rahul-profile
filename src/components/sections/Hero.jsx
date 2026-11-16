@@ -3,22 +3,6 @@ import EchoText from '../animations/EchoText.jsx'
 export default function Hero() {
   return (
 <section className="hero" id="home" aria-labelledby="hero-title">
-            <div className="hero-atmosphere" aria-hidden="true">
-              <div className="hero-model-glow" />
-              <div className="hero-model-ring" />
-              <div className="hero-ground-shadow" />
-              {['React', 'AI', 'API', '3D', 'JS', 'ML', '∞', '<>'].map((label, index) => (
-                <span className={`hero-tech-chip hero-tech-chip-${index + 1}`} key={label}>
-                  {label}
-                </span>
-              ))}
-              <span className="hero-code hero-code-one">const ideas = build(&amp;&amp; ship)</span>
-              <span className="hero-code hero-code-two">&lt;Future /&gt;</span>
-              <span className="hero-code hero-code-three">001101 · create · 001010</span>
-              <span className="hero-code hero-code-four">model → refine → print</span>
-              <span className="hero-code hero-code-five">while (curious) {'{'} learn() {'}'}</span>
-              <span className="hero-code hero-code-six">npm run build</span>
-            </div>
             <div className="hero-inner">
               <div className="hero-intro">
                 <div className="hero-copy reveal-on-scroll">
@@ -43,10 +27,7 @@ export default function Hero() {
                     </span>
                   </h1>
 
-                  <p className="hero-role">
-                    <span>Full-Stack Developer</span>
-                    <i aria-hidden="true" />
-                  </p>
+                  <p className="hero-role">Full-Stack Developer</p>
                   <p className="hero-summary">
                     I build useful web products, explore applied AI, and bring ideas into the
                     physical world through 3D modeling and printing.
