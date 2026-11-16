@@ -2,7 +2,7 @@ import { Component, Suspense, useEffect, useMemo, useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { ContactShadows, Float, Html, useAnimations, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
-import CrystalizedBall from './CrystalizedBall.jsx'
+import CrystalizedBall from '../animations/CrystalizedBall.jsx'
 
 function Model({ layout, activeSection }) {
   const { scene, animations } = useGLTF('/model.glb')
